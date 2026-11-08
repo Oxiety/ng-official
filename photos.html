@@ -2,7 +2,7 @@
 <html lang="ru"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#090a12">
+<meta name="theme-color" content="#071a3f">
 <meta name="color-scheme" content="dark">
 <meta name="description" content="Фотки — фотогалерея northling.">
 <meta property="og:title" content="Фотки · northling">
@@ -12,7 +12,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Onest:wght@400..800&family=Unbounded:wght@400..800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script>
 try { const saved = localStorage.getItem('northling-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch (_) {}
@@ -42,12 +42,12 @@ document.documentElement.classList.add('js');
 </defs></svg>
 <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="grain" aria-hidden="true"></div>
-<header class="top"><div class="wrap"><div class="pill">
-<a class="brand" href="index.html">northling<span>.</span></a>
+<header class="top"><div class="pill">
+<a class="brand" href="index.html" aria-label="northling"><span class="orb"><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg></span><b>northling<span>.</span></b></a>
 <nav id="menu" aria-label="Основная навигация"><a href="index.html">Главная</a><a href="arts.html">Арты</a><a href="photos.html" aria-current="page">Фотки</a><a href="oasis.html">Oasis</a><a href="webdev.html">webdev</a></nav>
-<button class="theme-toggle" type="button" aria-label="Переключить на светлую тему" aria-pressed="false" title="Переключить тему">☼</button>
+<span class="tray"><button class="theme-toggle" type="button" aria-label="Переключить на светлую тему" aria-pressed="false" title="Переключить тему">☼</button><span class="clock" id="clock" aria-hidden="true"></span></span>
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
-</div></div></header>
+</div></header>
 <main>
 <section class="hero" style="padding-bottom:20px"><div class="wrap hero-grid">
 <div class="hero-text">
@@ -71,7 +71,7 @@ document.documentElement.classList.add('js');
 </div>
 </main>
 <footer class="footer"><div class="wrap footrow">
-<div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью CODEX, вайб-кодинга и ручной доводки.</p></div>
+<div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
 <div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>

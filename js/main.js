@@ -13,7 +13,8 @@ const greetings=[
   'Ну всё, вась, связь.',
   'У нас тут есть печеньки, заходи!',
   'Васап мабой!',
-  'Welcome to my space!'
+  'Welcome to my space!',
+  '(What’s The Story), northling Glory?'
 ];
 const welcome=$('#welcome');
 const rerollButton=$('#greeting-reroll');
@@ -27,6 +28,7 @@ if(welcome){
     welcome.textContent=message;
     welcome.classList.toggle('long',message.length>30);
     welcome.classList.toggle('very-long',message.length>43);
+    welcome.classList.remove('glitch');void welcome.offsetWidth;welcome.classList.add('glitch');
   };
   rerollGreeting();
   if(rerollButton)rerollButton.addEventListener('click',rerollGreeting);
@@ -45,7 +47,7 @@ const applyTheme=theme=>{
     themeButton.title=value==='dark'?'Светлая тема':'Тёмная тема';
   }
   const meta=$('meta[name="theme-color"]');
-  if(meta){const isWebdev=document.body&&document.body.classList.contains('webdev-page');meta.content=isWebdev?(value==='light'?'#eff8f0':'#030806'):(value==='light'?'#f4f2f8':'#090a12')}
+  if(meta){const isWebdev=document.body&&document.body.classList.contains('webdev-page');meta.content=isWebdev?(value==='light'?'#eff8f0':'#04200f'):(value==='light'?'#cdc0ff':'#1a0e52')}
 };
 let initialTheme=document.documentElement.dataset.theme||'dark';
 try{const storedTheme=localStorage.getItem('northling-theme');if(storedTheme==='light'||storedTheme==='dark')initialTheme=storedTheme}catch{}
@@ -55,6 +57,10 @@ if(themeButton)themeButton.addEventListener('click',()=>{
   applyTheme(next);
   try{localStorage.setItem('northling-theme',next)}catch{}
 });
+
+/* ——— часы в трее ——— */
+const clock=$('#clock');
+if(clock){const tick=()=>{clock.textContent=new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'})};tick();setInterval(tick,15000)}
 
 /* ——— меню ——— */
 const toggle=$('.nav-toggle'),nav=$('nav');
