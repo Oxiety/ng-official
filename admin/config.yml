@@ -1,9 +1,7 @@
 backend:
-  name: github
-  repo: ТВОЙ_НИК_НА_GITHUB/ИМЯ_РЕПОЗИТОРИЯ
-  branch: main # или master, если у тебя главная ветка так называется
-  base_url: https://vercel.app
-  auth_endpoint: api/auth
+  name: turbo-github
+  turbo_site_id: 1d1db865-c1f4-42dd-9a35-fb1b91078193
+  branch: main
 
 site_url: https://northling.space
 display_url: https://northling.space
