@@ -47,6 +47,24 @@ collections:
               - { label: "Место съёмки", name: "location", widget: "string", required: false }
               - { label: "Подпись", name: "caption", widget: "string", required: false }
 
+  - name: "music"
+    label: "Музыка — плеер"
+    files:
+      - name: "tracks"
+        label: "Треки для плеера"
+        file: "data/music.json"
+        format: "json"
+        fields:
+          - label: "Треки"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - { label: "Название трека", name: "title", widget: "string" }
+              - { label: "Исполнитель", name: "artist", widget: "string", required: false }
+              - { label: "Ссылка на аудиофайл (например с jukehost)", name: "file", widget: "string" }
+              - { label: "Обложка (необязательно)", name: "cover", widget: "image", required: false }
+
   - name: "page-settings"
     label: "Страницы — заголовки и обложки"
     files:

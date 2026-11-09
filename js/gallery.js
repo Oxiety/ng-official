@@ -6,7 +6,7 @@
   document.querySelectorAll("[data-gallery]").forEach(async (gallery) => {
     const type = gallery.dataset.gallery;
     try {
-      const response = await fetch(`data/${type}.json`, { cache: "no-store" });
+      const response = await fetch(`data/${type}.json`, { cache: "no-cache" });
       if (!response.ok) throw new Error("Не удалось загрузить галерею");
       const data = await response.json();
       const items = Array.isArray(data.items) ? data.items : [];
@@ -27,7 +27,7 @@
         // В лайтбоксе показываем подпись, описание (поле alt) и дату/место; точные дубликаты убираем.
         const captionParts = [item.caption, item.alt, meta].filter(Boolean);
         const caption = esc([...new Set(captionParts)].join(" — ") || item.title || "");
-        return `<figure class="shot rv"><button type="button" data-full="${image}" data-alt="${alt}" data-caption="${caption}" aria-label="Открыть: ${title}"><img src="${image}" alt="${alt}" loading="lazy"><span class="cap">${title}</span></button>${details.length ? `<figcaption class="shot-meta">${details.join("")}</figcaption>` : ""}</figure>`;
+        return `<figure class="shot rv"><button type="button" data-full="${image}" data-alt="${alt}" data-caption="${caption}" aria-label="Открыть: ${title}"><img src="${image}" alt="${alt}" loading="lazy" decoding="async"><span class="cap">${title}</span></button>${details.length ? `<figcaption class="shot-meta">${details.join("")}</figcaption>` : ""}</figure>`;
       }).join("");
       gallery.dispatchEvent(new CustomEvent("gallery:updated", { bubbles: true }));
       gallery.querySelectorAll(".rv").forEach((el, index) => {

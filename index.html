@@ -12,11 +12,12 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.css">
 <script>
 try { const saved = localStorage.getItem('northling-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch (_) {}
 document.documentElement.classList.add('js');
+try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection;if((m&&m<=2)||(c&&c<=2)||(d&&d.saveData)||(c&&c<=4&&m&&m<=4))document.documentElement.classList.add('lite')}catch(_){}
 </script>
 </head>
 <body class="">
@@ -61,7 +62,7 @@ document.documentElement.classList.add('js');
 </section>
 
 <figure class="win win-photo"><span class="eyebrow">arts_cover.jpg</span>
-<div class="frame"><img src="img/snow.jpg" data-site-image="arts_cover" data-site-image-alt="arts_cover_alt" alt="Норт и Ноэль под снегом" style="object-position:50% 32%" fetchpriority="high"></div>
+<div class="frame"><img data-site-image="arts_cover" data-site-image-alt="arts_cover_alt" alt="Норт и Ноэль под снегом" style="object-position:50% 32%" fetchpriority="high"></div>
 </figure>
 
 <div class="marquee" aria-hidden="true"><div class="marquee-track"><div class="marquee-group"><span>northling</span><span>Норт</span><span>Ноэль</span><span>арты</span><span>britpop</span><span>90s rock</span><span>Oasis</span><span>webdev</span></div><div class="marquee-group"><span>northling</span><span>Норт</span><span>Ноэль</span><span>арты</span><span>britpop</span><span>90s rock</span><span>Oasis</span><span>webdev</span></div></div></div>
@@ -86,10 +87,11 @@ document.documentElement.classList.add('js');
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.1</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
 <script src="js/content.js"></script>
 <script src="js/main.js"></script>
+<script src="js/player.js" defer></script>
 
 </body></html>

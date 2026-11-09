@@ -90,25 +90,35 @@ if('IntersectionObserver' in window&&!reduce){
   });
 }else targets.forEach(el=>el.classList.add('in'));
 
+
+/* ——— пауза декоративных анимаций у окон вне экрана (на вид не влияет) ——— */
+if('IntersectionObserver' in window){
+  const ao=new IntersectionObserver(es=>es.forEach(e=>e.target.classList.toggle('anim-off',!e.isIntersecting)),{rootMargin:'80px 0px'});
+  $$('.win,.sec>.wrap,.hero>.wrap').forEach(el=>ao.observe(el));
+}
+
 /* ——— подсветка карточек за курсором ——— */
 if(fine){
-  $$('.card').forEach(c=>c.addEventListener('pointermove',e=>{
-    const r=c.getBoundingClientRect();
-    c.style.setProperty('--mx',(e.clientX-r.left)+'px');
-    c.style.setProperty('--my',(e.clientY-r.top)+'px');
-  }));
+  $$('.card').forEach(c=>{let raf=0,ev;c.addEventListener('pointermove',e=>{
+    ev=e;if(raf)return;
+    raf=requestAnimationFrame(()=>{raf=0;const r=c.getBoundingClientRect();
+      c.style.setProperty('--mx',(ev.clientX-r.left)+'px');
+      c.style.setProperty('--my',(ev.clientY-r.top)+'px')});
+  })});
 }
 
 /* ——— лёгкий 3D-наклон главной картинки ——— */
 const frame=$('.frame');
 if(frame&&fine&&!reduce){
   const box=frame.parentElement;
+  let tr=0,te;
   box.addEventListener('pointermove',e=>{
-    const r=box.getBoundingClientRect();
-    const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
-    frame.style.transform=`perspective(900px) rotateY(${x*9}deg) rotateX(${-y*9}deg)`;
+    te=e;if(tr)return;
+    tr=requestAnimationFrame(()=>{tr=0;const r=box.getBoundingClientRect();
+      const x=(te.clientX-r.left)/r.width-.5,y=(te.clientY-r.top)/r.height-.5;
+      frame.style.transform=`perspective(900px) rotateY(${x*9}deg) rotateX(${-y*9}deg)`});
   });
-  box.addEventListener('pointerleave',()=>{frame.style.transform=''});
+  box.addEventListener('pointerleave',()=>{cancelAnimationFrame(tr);tr=0;frame.style.transform=''});
 }
 
 /* ——— копирование (Discord) ——— */

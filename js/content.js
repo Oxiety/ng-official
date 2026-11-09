@@ -30,12 +30,18 @@
     resizeTimer = setTimeout(() => marqueeNodes.forEach(({ node, words }) => renderMarquee(node, words)), 200);
   });
 
-  // Картинки с data-site-image прячем до подмены src, чтобы не мигала картинка по умолчанию.
+  // Картинки с data-site-image стартуют пустыми и скрытыми. Показываем их только когда
+  // нужная картинка (из data/site.json) загрузилась, поэтому старая/дефолтная не мелькает и не накладывается.
   const revealImages = () => {
-    document.querySelectorAll("[data-site-image]").forEach(node => { node.style.visibility = "visible"; });
+    document.querySelectorAll("[data-site-image]").forEach(node => {
+      if (!node.getAttribute("src")) return;                    // картинка не задана: остаётся скрытой
+      const show = () => { node.style.visibility = "visible"; };
+      if (node.complete && node.naturalWidth) show();
+      else { node.addEventListener("load", show, { once: true }); node.addEventListener("error", show, { once: true }); }
+    });
   };
 
-  fetch("data/site.json", { cache: "no-store" })
+  fetch("data/site.json", { cache: "no-cache" })
     .then(response => {
       if (!response.ok) throw new Error("Не удалось загрузить тексты сайта");
       return response.json();

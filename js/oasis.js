@@ -11,7 +11,7 @@
     "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
   }[ch]));
   const reveal = node => node.querySelectorAll(".rv").forEach(el => el.classList.add("in"));
-  fetch("data/oasis.json", { cache: "no-store" })
+  fetch("data/oasis.json", { cache: "no-cache" })
     .then(response => {
       if (!response.ok) throw new Error("Не удалось загрузить данные Oasis");
       return response.json();
@@ -36,7 +36,7 @@
           target.innerHTML = albums.map((album, index) => {
             const tracks = Array.isArray(album.tracks) ? album.tracks : [];
             return `<article class="card album-card rv">
-              ${album.cover ? `<img class="album-cover" src="${esc(album.cover)}" alt="Обложка ${esc(album.title)}" loading="lazy">` : ""}
+              ${album.cover ? `<img class="album-cover" src="${esc(album.cover)}" alt="Обложка ${esc(album.title)}" loading="lazy" decoding="async">` : ""}
               <div class="album-meta"><span class="n">${String(index + 1).padStart(2, "0")}</span><span class="album-year">${esc(album.year)}</span></div>
               <h3>${esc(album.title)}</h3>
               <p class="album-description">${esc(album.description)}</p>
@@ -49,7 +49,7 @@
       if (liveTarget) {
         const live = Array.isArray(data.live) ? data.live : [];
         liveTarget.innerHTML = live.length ? live.map(item => `<article class="concert-card rv">
-          <img src="${esc(item.image)}" alt="${esc(item.alt || item.title)}" loading="lazy">
+          <img src="${esc(item.image)}" alt="${esc(item.alt || item.title)}" loading="lazy" decoding="async">
           <div class="concert-copy"><span class="concert-kicker">${esc(item.location)} · ${esc(item.year)}</span><h3>${esc(item.title)}</h3><p>${esc(item.description)}</p></div>
         </article>`).join("") : '<p class="gallery-empty">Концерты пока не добавлены.</p>';
         reveal(liveTarget);
