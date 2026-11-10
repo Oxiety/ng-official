@@ -1,4 +1,5 @@
-(() => {
+/* Запускается при загрузке страницы и при каждом бесшовном переходе (см. js/core.js) */
+NL.onPage(() => {
   "use strict";
   const target = document.getElementById("oasisAlbums");
   const liveTarget = document.getElementById("oasisLiveArchive");
@@ -70,4 +71,4 @@
       });
       console.error(error);
     });
-})();
+});

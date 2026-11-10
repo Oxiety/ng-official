@@ -103,8 +103,10 @@
       ui.cover.textContent = ""; ui.cover.appendChild(img);
     }
     ui.list.querySelectorAll("li").forEach((li, i) => {
+      const btn = li.querySelector("button");
+      if (!btn) return;                  // строка «Пока пусто» без кнопки
       li.classList.toggle("is-current", i === index);
-      li.querySelector("button").setAttribute("aria-current", i === index ? "true" : "false");
+      btn.setAttribute("aria-current", i === index ? "true" : "false");
     });
     if ("mediaSession" in navigator && t) {
       navigator.mediaSession.metadata = new MediaMetadata({ title: t.title, artist: t.artist || "northling" });

@@ -17,6 +17,7 @@
 <script>
 try { const saved = localStorage.getItem('northling-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch (_) {}
 document.documentElement.classList.add('js');
+window.__nlSite=fetch('data/site.json',{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(new Error('site.json'))); window.__nlSite.catch(()=>{});
 try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection;if((m&&m<=2)||(c&&c<=2)||(d&&d.saveData)||(c&&c<=4&&m&&m<=4))document.documentElement.classList.add('lite')}catch(_){}
 </script>
 </head>
@@ -59,7 +60,7 @@ try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection;if
 <div class="actions"><a class="btn primary" href="#albums">Дискография <svg class="i " aria-hidden="true"><use href="#i-down"/></svg></a><a class="btn" href="#listen">Слушать <svg class="i " aria-hidden="true"><use href="#i-play"/></svg></a></div>
 </div>
 <div class="hero-visual">
-<div class="frame"><img class="oasis-band-image" data-site-image="oasis_cover" data-site-image-alt="oasis_cover_alt" alt="Oasis" fetchpriority="high"></div>
+<div class="frame"><img class="oasis-band-image" data-site-image="oasis_cover" data-site-image-fit="oasis_cover_fit" data-site-image-alt="oasis_cover_alt" alt="Oasis" fetchpriority="high"></div>
 </div>
 </div></section>
 <div class="marquee" aria-hidden="true"><div class="marquee-track" data-site-marquee="oasis_marquee"><div class="marquee-group"><span>Oasis</span><span>Manchester</span><span>Creation Records</span><span>Britpop</span><span>Definitely Maybe</span><span>Live Forever</span><span>Supersonic</span><span>Mad for it</span></div><div class="marquee-group"><span>Oasis</span><span>Manchester</span><span>Creation Records</span><span>Britpop</span><span>Definitely Maybe</span><span>Live Forever</span><span>Supersonic</span><span>Mad for it</span></div></div></div>
@@ -105,12 +106,16 @@ try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection;if
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.1</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.2.1</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
+
+<script src="js/core.js"></script>
+<script src="js/gallery.js"></script>
 <script src="js/oasis.js"></script>
 <script src="js/content.js"></script>
 <script src="js/main.js"></script>
+<script src="js/game.js"></script>
 <script src="js/player.js" defer></script>
-
+<script src="js/router.js"></script>
 </body></html>
