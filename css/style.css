@@ -1112,3 +1112,24 @@ html.lite .eyebrow,html.lite .grain:before{animation:none!important}
 /* телефон: окно на всю ширину над таскбаром */
 @media(max-width:600px){.player{left:10px;right:10px;width:auto;bottom:66px;height:min(460px,calc(100vh - 90px))}}
 @media(prefers-reduced-motion:reduce){.player-toggle.is-playing{animation:none}}
+
+/* =====================================================================
+   v2.2: без мелькания старого текста + кадрирование картинок
+   ===================================================================== */
+
+/* Пока не пришли тексты из админки (data/site.json), не показываем тексты по умолчанию из HTML.
+   Класс site-ready ставит js/content.js, когда всё подставлено (или через 3 сек, если сервер завис). */
+html.js:not(.site-ready) [data-site-content],
+html.js:not(.site-ready) .marquee-track{visibility:hidden}
+
+/* ——— кадрирование ———
+   Настраивается в админке отдельно для компьютера и для телефона (js/core.js: NL.applyFit).
+   .fit    — настройка для компьютера (действует и на телефоне, если для него не задано своё)
+   .fit-m  — настройка только для телефона (экран до 760px)
+   --z: приближение, --ox/--oy: сдвиг (он же центр приближения). Для телефона то же с суффиксом m. */
+img.fit{object-position:var(--ox,50%) var(--oy,50%)!important;transform:scale(var(--z,1));transform-origin:var(--ox,50%) var(--oy,50%)}
+.shot button:hover img.fit{transform:scale(calc(var(--z,1)*1.06))}
+@media(max-width:760px){
+  img.fit-m{object-position:var(--oxm,50%) var(--oym,50%)!important;transform:scale(var(--zm,1));transform-origin:var(--oxm,50%) var(--oym,50%)}
+  .shot button:hover img.fit-m{transform:scale(calc(var(--zm,1)*1.06))}
+}

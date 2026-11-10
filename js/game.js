@@ -1,5 +1,5 @@
 /* Норт против Ноэля — match-three */
-(()=>{
+NL.onPage(()=>{
 'use strict';
 const board=document.querySelector('#board');
 if(!board)return;
@@ -106,4 +106,4 @@ function start(){
 }
 document.querySelector('#newGame').addEventListener('click',start);
 start();
-})();
+});
