@@ -83,5 +83,15 @@
   "oasis_bside_title": "Би-сайды",
   "noel_height": "171",
   "home_arts_card": "Норт и Ноэль, и небольшая галерея фурри-артов с ними. Плюс мини-игра.",
-  "oasis_playlist_title": "Oasis Playlist"
+  "oasis_playlist_title": "Oasis Playlist",
+  "arts_cover_fit": {
+    "x": 50,
+    "y": 0,
+    "z": 1
+  },
+  "arts_cover_fit_mobile": {
+    "x": 50,
+    "y": 0,
+    "z": 1.41
+  }
 }
