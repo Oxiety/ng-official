@@ -3,8 +3,122 @@
   "artists": [
     {
       "name": "Oasis",
-      "image": "",
+      "image": "/img/uploads/2026-11-11-013238883-k2aul.png",
       "albums": [
+        {
+          "title": "Definitely Maybe",
+          "tracks": [
+            {
+              "title": "Rock'n'Roll Star",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e945-707f-a890-f3c09add5493"
+            },
+            {
+              "title": "Shakermaker",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e90d-7367-848d-ba99434d28e2"
+            },
+            {
+              "title": "Live Forever",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e8be-72c4-b26c-36c151b7004f"
+            },
+            {
+              "title": "Up In The Sky",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e89d-73b1-9857-3f761de74991"
+            },
+            {
+              "title": "Columbia",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e9a8-702e-bd7b-06a0d457f3f0"
+            },
+            {
+              "title": "Supersonic",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e8dd-7321-bc47-7f04fc5ba859"
+            },
+            {
+              "title": "Bring It On Down",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e823-715c-ba80-071eb78ac65d"
+            },
+            {
+              "title": "Cigarettes & Alcohol",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e8e8-7361-babf-c792f83ef100"
+            },
+            {
+              "title": "Digsy's Dinner",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e682-7023-8b5f-3423a060f55f"
+            },
+            {
+              "title": "Slide Away",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-ea85-71a4-a7df-31e17af0057f"
+            },
+            {
+              "title": "Married With Children",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e70c-704f-9a97-b94f6703433e"
+            },
+            {
+              "title": "Cloudburst (Bonus)",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e969-71cf-b0fc-b40231e97a56"
+            },
+            {
+              "title": "Sad Song (Bonus)",
+              "file": "https://audio.jukehost.co.uk/01a1c7d1-e871-7116-b088-29ca24126ccc"
+            }
+          ],
+          "year": "1994",
+          "cover": "/img/uploads/2026-11-11-014155970-aq1fj.png"
+        },
+        {
+          "title": "(What's The Story) Morning Glory?",
+          "tracks": [
+            {
+              "title": "Hello",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bc79-721a-a0fd-7eff4a66910c"
+            },
+            {
+              "title": "Roll With It",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bd20-71a2-8b7b-6b246dbfe782"
+            },
+            {
+              "title": "Wonderwall",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bd8e-7104-b310-65cfb4cc3bb8"
+            },
+            {
+              "title": "Don't Look Back In Anger",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bdc4-73ce-a5a0-f8cd71f8a928"
+            },
+            {
+              "title": "Hey Now!",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-be67-7262-94b2-db27326b7905"
+            },
+            {
+              "title": "Untitled (1)",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-ba83-709f-994d-d30fadfab495"
+            },
+            {
+              "title": "Some Might Say",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-be48-710f-adf5-8a82e032d615"
+            },
+            {
+              "title": "Cast No Shadow",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bdaf-70cc-a4a9-2cb59c736379"
+            },
+            {
+              "title": "She's Electric",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bd19-71dd-9d30-5b088eb8bac5"
+            },
+            {
+              "title": "Morning Glory",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bdf1-724d-8608-c45db422288a"
+            },
+            {
+              "title": "Untitled (2)",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-ba33-7127-8ad6-9166122f6e4b"
+            },
+            {
+              "title": "Champagne Supernova",
+              "file": "https://audio.jukehost.co.uk/01a1c7d7-bfba-729d-b6be-4a9991d2df5a"
+            }
+          ],
+          "year": "1995",
+          "cover": "/img/uploads/2026-11-11-014225842-h7t8b.png"
+        },
         {
           "title": "Be Here Now",
           "year": "1997",
@@ -57,6 +171,23 @@
           ]
         }
       ]
+    },
+    {
+      "name": "Tom Petty (TEST)",
+      "albums": [
+        {
+          "title": "Ya Ne Ebu",
+          "tracks": [
+            {
+              "title": "Love Is A Long Road",
+              "file": "https://audio.jukehost.co.uk/5a151631-40b0-11f1-a012-fa163edb0845"
+            }
+          ],
+          "year": "????",
+          "cover": "/img/uploads/649228533-18436901365117817-334018345529-qegpy.jpg"
+        }
+      ],
+      "image": "/img/uploads/649228533-18436901365117817-334018345529-47cgy.jpg"
     }
   ]
 }
