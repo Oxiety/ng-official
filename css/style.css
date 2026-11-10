@@ -1056,62 +1056,148 @@ html.lite .win,html.lite .win:before,html.lite .sec>.wrap,html.lite .sec>.wrap:b
 html.lite .eyebrow,html.lite .grain:before{animation:none!important}
 
 /* =====================================================================
-   ПЛЕЕР  (js/player.js)
-   Окно фиксированного размера, список треков внутри прокручивается.
-   Цвета берутся из общих переменных темы (--tb1, --tb2, --accent ...).
+   ПЛЕЕР (js/player.js) И НАСТРОЙКИ (js/settings.js)
+   Два «окна» под кнопками таскбара. Окно плеера фиксированного размера,
+   списки внутри прокручиваются. Цвета берутся из переменных темы.
+   Разделы: 1. Общая оболочка окон  2. Кнопки  3. Плеер  4. Настройки  5. Телефон
    ===================================================================== */
 
-/* кнопка ♪ в таскбаре: когда играет, мягко пульсирует */
-.player-toggle{font-size:15px}
+/* ——— 1. Общая оболочка окон ——— */
+.player,.settings{position:fixed;right:12px;bottom:68px;z-index:75;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:16px;border:1px solid rgba(255,255,255,.55);color:var(--text);
+  background:linear-gradient(180deg,var(--g-top) 0,var(--g-mid) 120px,var(--g-low) 100%),var(--popbg,#241468);
+  box-shadow:0 18px 50px var(--shadow,rgba(0,0,0,.4)),inset 0 1px 0 rgba(255,255,255,.7)}
+html[data-theme="light"] .player,html[data-theme="light"] .settings{--popbg:#ece6ff}
+.player[hidden],.settings[hidden]{display:none}
+.player{width:352px;height:min(540px,calc(100vh - 96px))}
+.settings{width:310px;max-height:calc(100vh - 96px)}
+.pop-bar{display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 14px;height:34px;flex:none;
+  font:800 12px var(--body);letter-spacing:.06em;color:#fff;text-shadow:0 1px 2px rgba(20,0,80,.75);
+  background:linear-gradient(180deg,rgba(255,255,255,.7) 0,rgba(255,255,255,.12) 49%,rgba(0,0,0,.1) 50%,transparent 100%),linear-gradient(90deg,var(--tb1),var(--tb2))}
+.pop-title{display:inline-flex;align-items:center;gap:6px}
+.pop-x{display:grid;place-items:center;width:26px;height:20px;border-radius:6px;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,#ff9a8a,#d8432e);color:#fff;cursor:pointer;padding:0}
+.pop-x .pi{width:12px;height:12px}
+.pi{width:18px;height:18px;flex:none;display:block}
+.pop-title .pi,.pop-title .i{width:15px;height:15px}
+
+/* кнопка плеера в таскбаре пульсирует, пока играет музыка */
+.player-toggle .pi{width:19px;height:19px}
+.settings-toggle .i{width:19px;height:19px}
 .player-toggle.is-playing{animation:player-pulse 1.6s ease-in-out infinite}
 @keyframes player-pulse{50%{box-shadow:0 0 16px var(--accent)}}
 
-/* само окно: справа над таскбаром */
-.player{position:fixed;right:12px;bottom:68px;z-index:75;width:340px;height:460px;display:flex;flex-direction:column;overflow:hidden;
-  border-radius:16px;border:1px solid rgba(255,255,255,.55);color:var(--text);
-  background:linear-gradient(180deg,var(--g-top) 0,var(--g-mid) 120px,var(--g-low) 100%),var(--win,rgba(52,28,140,.9));
-  box-shadow:0 18px 50px var(--shadow,rgba(0,0,0,.4)),inset 0 1px 0 rgba(255,255,255,.7)}
-.player[hidden]{display:none}
-.player-bar{display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 14px;height:34px;flex:none;
-  font:800 12px var(--body);letter-spacing:.06em;color:#fff;text-shadow:0 1px 2px rgba(20,0,80,.75);
-  background:linear-gradient(180deg,rgba(255,255,255,.7) 0,rgba(255,255,255,.12) 49%,rgba(0,0,0,.1) 50%,transparent 100%),linear-gradient(90deg,var(--tb1),var(--tb2))}
-.player-x{width:26px;height:20px;border-radius:6px;border:1px solid rgba(255,255,255,.6);background:linear-gradient(180deg,#ff9a8a,#d8432e);color:#fff;font-size:11px;cursor:pointer}
+/* ——— 2. Кнопки-иконки ——— */
+.pbtn{display:grid;place-items:center;width:36px;height:36px;flex:none;padding:0;border-radius:50%;border:1px solid rgba(255,255,255,.5);cursor:pointer;color:#fff;
+  background:linear-gradient(180deg,rgba(255,255,255,.5) 0,rgba(255,255,255,.08) 49%,rgba(20,0,70,.25) 50%,rgba(95,243,255,.3) 100%),linear-gradient(180deg,var(--tb1),var(--tb2))}
+.pbtn:hover{filter:brightness(1.15)}
+.pbtn:active{transform:scale(.94)}
+.pbtn-main{width:44px;height:44px}
+.pbtn-main .pi{width:21px;height:21px}
+.pbtn-small{width:30px;height:30px}
+.pbtn-small .pi{width:15px;height:15px}
+.pbtn-toggle{background:none;border-color:transparent;color:var(--muted)}
+.pbtn-toggle.on{color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 
-/* верх: обложка + название */
-.player-now{display:flex;gap:12px;align-items:center;padding:14px 14px 6px;flex:none}
-.player-cover{width:64px;height:64px;flex:none;border-radius:12px;overflow:hidden;display:grid;place-items:center;font-size:26px;color:#fff;
+/* ——— 3. Плеер ——— */
+.player-now{display:flex;gap:12px;align-items:center;padding:12px 14px 4px;flex:none}
+.player-cover{width:58px;height:58px;flex:none;border-radius:12px;overflow:hidden;display:grid;place-items:center;color:#fff;
   background:linear-gradient(135deg,var(--tb1),var(--tb2));border:1px solid rgba(255,255,255,.5)}
 .player-cover img{width:100%;height:100%;object-fit:cover}
+.player-cover .pi{width:26px;height:26px}
 .player-meta{min-width:0;display:flex;flex-direction:column;gap:3px}
 .player-title{font:800 15px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .player-artist{font:600 12px var(--body);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* перемотка и кнопки */
-.player-seek{display:flex;align-items:center;gap:8px;padding:6px 14px;flex:none;font:700 11px var(--body);color:var(--muted)}
+.player-seek{display:flex;align-items:center;gap:8px;padding:4px 14px;flex:none;font:700 11px var(--body);color:var(--muted)}
 .player-seek input{flex:1;min-width:0}
-.player-ctrl{display:flex;align-items:center;gap:8px;padding:4px 14px 10px;flex:none}
-.player-ctrl>button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.55);cursor:pointer;color:#fff;font-size:14px;
-  background:linear-gradient(180deg,rgba(255,255,255,.55) 0,rgba(255,255,255,.1) 49%,rgba(20,0,70,.25) 50%,rgba(95,243,255,.35) 100%),linear-gradient(180deg,var(--tb1),var(--tb2))}
-.player-ctrl>.player-play{width:46px;height:46px;font-size:18px}
-.player-ctrl>button:hover{filter:brightness(1.12)}
-.player-vol{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:13px}
-.player-vol input{width:78px}
-.player input[type=range]{accent-color:var(--accent);height:18px;cursor:pointer}
+.player-ctrl{display:flex;align-items:center;gap:6px;padding:2px 12px 8px;flex:none}
+.player-btns{display:flex;align-items:center;gap:4px}
+.player-vol{display:flex;align-items:center;gap:5px;margin-left:auto;color:var(--muted)}
+.player-vol .pi{width:16px;height:16px}
+.player-vol input{width:62px}
+.player input[type=range],.settings input[type=range]{accent-color:var(--accent);height:18px;cursor:pointer}
 
-/* список треков: он и прокручивается */
-.player-list{list-style:none;margin:0;padding:6px 8px 10px;flex:1;min-height:0;overflow-y:auto;border-top:1px solid var(--line2);background:rgba(0,0,0,.08)}
-.player-list button{width:100%;display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;text-align:left;padding:8px 10px;border:0;border-radius:10px;background:none;color:inherit;font:600 13px var(--body);cursor:pointer}
-.player-list button:hover{background:rgba(255,255,255,.14)}
-.player-list i{font-style:normal;font-size:11px;color:var(--muted);text-align:center}
-.player-list span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.player-list em{font-style:normal;font-size:11px;color:var(--muted);max-width:90px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.player-list .is-current button{background:linear-gradient(90deg,rgba(255,255,255,.22),rgba(255,255,255,.08));box-shadow:inset 0 0 0 1px var(--accent)}
-.player-list .is-current i{color:var(--accent)}
-.player-empty{padding:18px;text-align:center;color:var(--muted);font:600 13px var(--body)}
+/* вкладки */
+.player-tabs{display:flex;flex:none;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2);background:rgba(0,0,0,.1)}
+.player-tab{position:relative;flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px 4px;border:0;background:none;color:var(--muted);font:700 12px var(--body);cursor:pointer}
+.player-tab .pi{width:15px;height:15px}
+.player-tab.on{color:var(--text);box-shadow:inset 0 -2px 0 var(--accent)}
+.player-badge{font-style:normal;font-size:10px;line-height:1;padding:2px 5px;border-radius:99px;background:var(--accent);color:#10101b}
 
-/* телефон: окно на всю ширину над таскбаром */
-@media(max-width:600px){.player{left:10px;right:10px;width:auto;bottom:66px;height:min(460px,calc(100vh - 90px))}}
+/* содержимое вкладки: прокручивается */
+.player-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:6px 8px 10px;background:rgba(0,0,0,.08)}
+.player-empty{padding:22px 14px;text-align:center;color:var(--muted);font:600 13px var(--body);line-height:1.5}
+.prow{width:100%;display:flex;align-items:center;gap:10px;padding:7px 8px;border:0;border-radius:10px;background:none;color:inherit;text-align:left;cursor:pointer;font:600 13px var(--body)}
+.prow:hover,.ptrack:hover{background:rgba(255,255,255,.12)}
+.pcol{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+.pcol b{font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcol small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pgo{color:var(--muted)}.pgo .pi{width:15px;height:15px}
+.pthumb{width:42px;height:42px;flex:none;border-radius:10px;overflow:hidden;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--tb1),var(--tb2));border:1px solid rgba(255,255,255,.4)}
+.pthumb img{width:100%;height:100%;object-fit:cover}
+.pback{display:flex;align-items:center;gap:8px;padding:2px 2px 8px;font:800 13px var(--body)}
+.pback .pbtn{background:none;border-color:var(--line2);color:var(--text)}
+.palbum{display:flex;align-items:center;gap:10px;padding:4px 4px 10px}
+.palbum .pthumb{width:54px;height:54px}
+.ptrack{display:flex;align-items:center;gap:4px;border-radius:10px;padding-right:4px}
+.ptrack-main{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:8px 8px;border:0;background:none;color:inherit;text-align:left;cursor:pointer;font:600 13px var(--body)}
+.ptrack-main i{font-style:normal;font-size:11px;color:var(--muted);width:18px;text-align:center;flex:none}
+.ptrack-main>span:not(.pcol){min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ptrack .pbtn-small{background:none;border-color:transparent;color:var(--muted)}
+.ptrack .pbtn-small:hover{color:var(--accent);filter:none}
+.ptrack.is-current{background:linear-gradient(90deg,rgba(255,255,255,.2),rgba(255,255,255,.06));box-shadow:inset 0 0 0 1px var(--accent)}
+.ptrack.is-current .ptrack-main i{color:var(--accent)}
+.pqhead{display:flex;align-items:center;justify-content:space-between;padding:2px 6px 8px;font:700 12px var(--body);color:var(--muted)}
+.pqhead .pbtn-small{background:none;border-color:var(--line2);color:var(--muted)}
+
+/* «Предложить трек» */
+.psuggest{display:flex;flex-direction:column;gap:10px;padding:6px 6px 4px}
+.psuggest label{display:flex;flex-direction:column;gap:4px;font:700 12px var(--body);color:var(--muted)}
+.psuggest input[type=text],.psuggest input[type=url]{padding:9px 11px;border-radius:10px;border:1px solid var(--line2);background:rgba(255,255,255,.12);color:var(--text);font:600 14px var(--body)}
+.psuggest input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.pnote{margin:0;font:600 13px/1.5 var(--body);color:var(--muted)}
+.psend{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border-radius:12px;border:1px solid rgba(255,255,255,.6);cursor:pointer;color:#fff;font:800 14px var(--body);
+  background:linear-gradient(180deg,rgba(255,255,255,.5) 0,rgba(255,255,255,.08) 49%,rgba(20,0,70,.25) 50%,rgba(95,243,255,.3) 100%),linear-gradient(180deg,var(--tb1),var(--tb2))}
+.psend:hover{filter:brightness(1.12)}
+
+/* сообщение внизу окна плеера */
+.player-flash{position:absolute;left:50%;bottom:14px;transform:translate(-50%,10px);opacity:0;pointer-events:none;max-width:90%;padding:8px 14px;border-radius:99px;
+  background:rgba(20,10,60,.92);color:#fff;font:700 12px var(--body);transition:opacity .25s,transform .25s}
+.player-flash.show{opacity:1;transform:translate(-50%,0)}
+
+/* переключатель из нескольких вариантов (используется в плеере и настройках) */
+.pseg{display:flex;gap:4px;padding:3px;border-radius:12px;border:1px solid var(--line2);background:rgba(0,0,0,.12)}
+.pseg button{flex:1;padding:8px 6px;border:0;border-radius:9px;background:none;color:var(--muted);font:700 13px var(--body);cursor:pointer}
+.pseg button.on{color:#fff;background:linear-gradient(180deg,var(--tb1),var(--tb2));box-shadow:0 2px 8px rgba(0,0,0,.25)}
+
+/* ——— 4. Настройки ——— */
+.settings-body{display:flex;flex-direction:column;gap:14px;padding:14px;overflow-y:auto}
+.settings-body h3{margin:0 0 7px;font:800 13px var(--body);letter-spacing:.04em}
+.settings .hint{margin:8px 2px 0;font:600 12px/1.5 var(--body);color:var(--muted)}
+.switch{display:flex;align-items:center;gap:10px;cursor:pointer;font:700 13px var(--body)}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.switch .knob{position:relative;width:42px;height:24px;flex:none;border-radius:99px;border:1px solid var(--line2);background:rgba(0,0,0,.2);transition:background .2s}
+.switch .knob:after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.4);transition:transform .2s}
+.switch input:checked+.knob{background:linear-gradient(180deg,var(--tb1),var(--tb2))}
+.switch input:checked+.knob:after{transform:translateX(18px)}
+.switch input:focus-visible+.knob{outline:2px solid var(--accent);outline-offset:2px}
+
+/* ——— 5. Телефон: окна на всю ширину под шапкой ——— */
+@media(max-width:600px){
+  .player,.settings{left:10px;right:10px;bottom:64px;width:auto}
+  .player{height:min(560px,calc(100vh - 80px));height:min(560px,calc(100dvh - 80px))}
+  .pbtn{width:40px;height:40px}.pbtn-small{width:34px;height:34px}.pbtn-main{width:48px;height:48px}
+  .player-tab{padding:11px 4px}
+  .ptrack-main,.prow{padding-top:10px;padding-bottom:10px}
+  .player-vol input{width:54px}
+}
 @media(prefers-reduced-motion:reduce){.player-toggle.is-playing{animation:none}}
+
+/* ——— Режимы из настроек ——— */
+html.no-anim *,html.no-anim *:before,html.no-anim *:after{animation:none!important}
+html.lite .bg i,html.lite .bg:before,html.lite .bg:after,html.lite body:after{animation:none!important}
+
+/* Иконка «Фотки» на главной */
+.app-photos .ico{background:radial-gradient(circle at 50% 6%,rgba(255,255,255,.95) 0,rgba(255,255,255,.18) 46%,transparent 47%),linear-gradient(180deg,#8fe6ff,#1f8bd6 58%,#5cc4f5)}
 
 /* =====================================================================
    v2.2: без мелькания старого текста + кадрирование картинок

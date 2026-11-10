@@ -17,31 +17,24 @@ const fine=matchMedia('(hover: hover) and (pointer: fine)').matches;
 
 /* =============== ЧАСТЬ 1. ПОСТОЯННОЕ (1 раз) =============== */
 
-/* ——— светлая / тёмная тема ——— */
-const themeButton=$('.theme-toggle');
+/* ——— светлая / тёмная тема ———
+   Кнопка выбора темы теперь живёт в окне настроек (js/settings.js), оно вызывает NL.setTheme('light' | 'dark'). */
 const applyTheme=theme=>{
   const value=theme==='light'?'light':'dark';
   document.documentElement.dataset.theme=value;
   document.documentElement.style.colorScheme=value;
-  if(themeButton){
-    themeButton.textContent=value==='dark'?'☼':'☾';
-    themeButton.setAttribute('aria-label',value==='dark'?'Переключить на светлую тему':'Переключить на тёмную тему');
-    themeButton.setAttribute('aria-pressed',String(value==='light'));
-    themeButton.title=value==='dark'?'Светлая тема':'Тёмная тема';
-  }
   // цвет строки браузера на телефоне (у webdev свой, зелёный)
   const meta=$('meta[name="theme-color"]');
   if(meta){const isWebdev=document.body&&document.body.classList.contains('webdev-page');meta.content=isWebdev?(value==='light'?'#eff8f0':'#04200f'):(value==='light'?'#cdc0ff':'#1a0e52')}
 };
 NL.applyTheme=()=>applyTheme(document.documentElement.dataset.theme);
+NL.setTheme=theme=>{                              // сменить тему и запомнить выбор
+  applyTheme(theme);
+  try{localStorage.setItem('northling-theme',theme==='light'?'light':'dark')}catch{}
+};
 let initialTheme=document.documentElement.dataset.theme||'dark';
 try{const storedTheme=localStorage.getItem('northling-theme');if(storedTheme==='light'||storedTheme==='dark')initialTheme=storedTheme}catch{}
 applyTheme(initialTheme);
-if(themeButton)themeButton.addEventListener('click',()=>{
-  const next=document.documentElement.dataset.theme==='light'?'dark':'light';
-  applyTheme(next);
-  try{localStorage.setItem('northling-theme',next)}catch{}
-});
 
 /* ——— часы в таскбаре ——— */
 const clock=$('#clock');
