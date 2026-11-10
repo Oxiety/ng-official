@@ -1,3 +1,22 @@
 {
-  "items": []
+  "items": [
+    {
+      "title": "Don't Go Away",
+      "file": "https://audio.jukehost.co.uk/01a1c1bd-3b94-7087-b234-31a894dde816",
+      "cover": "/img/uploads/beherenowcover-nkqha.jpg",
+      "artist": "Oasis"
+    },
+    {
+      "title": "Be Here Now",
+      "file": "https://audio.jukehost.co.uk/01a1c1bd-3bd4-72e2-9c88-5d4db9467c72",
+      "artist": "Oasis",
+      "cover": "/img/uploads/beherenowcover-nkqha.jpg"
+    },
+    {
+      "title": "All Around The World",
+      "file": "https://audio.jukehost.co.uk/01a1c1bd-3de7-7103-8096-6e446f33620b",
+      "artist": "Oasis",
+      "cover": "/img/uploads/beherenowcover-nkqha.jpg"
+    }
+  ]
 }
