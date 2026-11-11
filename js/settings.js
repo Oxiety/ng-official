@@ -9,7 +9,7 @@
      • Отключить анимации совсем.
    Что запоминается: localStorage, ключ northling-settings
      { perf: "auto" | "on" | "off", noAnim: true | false,
-       playerStyle: "classic" | "retro", clickSound: true | false }
+       playerStyle: "classic" | "retro" (retro = iPod), clickSound: true | false }
    Применяются настройки двумя способами:
      1) сразу при загрузке: маленький скрипт в <head> каждой страницы
         (чтобы не было «моргания»);
@@ -24,7 +24,7 @@
   if (!toggle) return;
 
   /* ——— Сохранённые настройки ——— */
-  let settings = { perf: "auto", noAnim: false, playerStyle: "classic", clickSound: true };
+  let settings = { perf: "auto", noAnim: false, playerStyle: "retro", clickSound: true };
   try { Object.assign(settings, JSON.parse(localStorage.getItem(KEY)) || {}); } catch (_) {}
   window.NL.settings = settings;                 // остальные скрипты (плеер) читают настройки отсюда
   const save = () => {
@@ -59,8 +59,8 @@
         <p class="hint">Если сайт лагает, включи. Уберутся размытие стекла, дрожание окон и анимированный фон. «Авто» включает сама на слабых устройствах.</p>
       </section>
       <section><h3>Плеер</h3>
-        <div class="pseg" data-group="playerStyle"><button type="button" data-value="classic">Классический</button><button type="button" data-value="retro">Ретро</button></div>
-        <p class="hint">«Ретро» — плеер с колесом в стиле нулевых.</p>
+        <div class="pseg" data-group="playerStyle"><button type="button" data-value="classic">Классический</button><button type="button" data-value="retro">iPod</button></div>
+        <p class="hint">iPod — плеер с колесом в стиле нулевых.</p>
         <label class="switch" style="margin-top:10px"><input type="checkbox" data-group="clickSound"><span class="knob" aria-hidden="true"></span><span>Звук колеса (тихий клик)</span></label>
       </section>
       <section><h3>Анимации</h3>

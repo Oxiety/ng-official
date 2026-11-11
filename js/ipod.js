@@ -2,12 +2,12 @@
    РЕТРО-ПЛЕЕР С КОЛЕСОМ (js/ipod.js)
    ---------------------------------------------------------------------
    Что это: второй вид плеера в стиле нулевых: корпус, экранчик с меню и
-   «колесо». Включается в настройках: «Плеер» → «Ретро».
+   «колесо». Включён по умолчанию; в настройках «Плеер» → «iPod» / «Классический».
    Музыку, очередь, шаффл и повтор он берёт из движка в js/player.js
    (объект NL.player). Здесь только внешний вид и управление.
 
    Как им пользоваться:
-     • вести пальцем / мышкой по кругу колеса: прокрутка списка
+     • вести пальцем / мышкой по кругу колеса: прокрутка списка (только колесо, экран и колёсико мыши не управляют)
        (на экране «Сейчас играет»: громкость или перемотка)
      • центральная кнопка: выбрать. Если удерживать:
        трек → «добавить в очередь», в очереди → «убрать»
@@ -42,6 +42,7 @@
     const style = kind === "fill" ? 'fill="currentColor" stroke="none"' : 'fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"';
     return `<svg class="pi" viewBox="0 0 24 24" aria-hidden="true" ${style}><path d="${path}"/></svg>`;
   };
+  const VERSION = "2.3";
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   const fmt = (s) => { if (!isFinite(s) || s < 0) s = 0; return Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0"); };
   const plural = (n, one, few, many) => {
@@ -74,16 +75,16 @@
   const dev = el("section", "ipod");
   dev.hidden = true;
   dev.tabIndex = -1;
-  dev.setAttribute("aria-label", "Ретро-плеер");
+  dev.setAttribute("aria-label", "iPod");
   dev.innerHTML = `
     <button type="button" class="ipod-x" aria-label="Закрыть плеер">${icon("close")}</button>
     <div class="ipod-screen"><div class="ipod-lcd">
-      <div class="ipod-head"><span class="ipod-title"></span><span class="ipod-ind"></span></div>
+      <div class="ipod-head"><span class="ipod-title"></span><span class="ipod-ind"></span><span class="ipod-batt"></span></div>
       <div class="ipod-view"></div>
       <div class="ipod-hint"></div>
       <div class="ipod-toast"></div>
     </div></div>
-    <div class="ipod-wheel" aria-label="Колесо: проведи по кругу для прокрутки">
+    <div class="ipod-wheel" aria-label="Колесо iPod: проведи по кругу для прокрутки">
       <span class="wl wl-menu">MENU</span>
       <span class="wl wl-prev">${icon("prev")}</span>
       <span class="wl wl-next">${icon("next")}</span>
@@ -92,7 +93,21 @@
     </div>`;
   document.body.appendChild(dev);
   const q = (s) => dev.querySelector(s);
-  const ui = { title: q(".ipod-title"), ind: q(".ipod-ind"), view: q(".ipod-view"), hint: q(".ipod-hint"), toast: q(".ipod-toast"), wheel: q(".ipod-wheel"), center: q(".ipod-center") };
+  const ui = { title: q(".ipod-title"), ind: q(".ipod-ind"), batt: q(".ipod-batt"), view: q(".ipod-view"), hint: q(".ipod-hint"), toast: q(".ipod-toast"), wheel: q(".ipod-wheel"), center: q(".ipod-center") };
+
+  /* Заряд: берём настоящий заряд устройства (Battery API), если браузер даёт; иначе показываем 100% */
+  const battery = { level: 1, charging: false };
+  const paintBattery = () => {
+    const pct = Math.round(battery.level * 100);
+    ui.batt.innerHTML = `<span class="bt-n">${pct}%</span><span class="bt${battery.charging ? " chg" : ""}"><i style="width:${pct}%"></i></span>`;
+  };
+  try {
+    if (navigator.getBattery) navigator.getBattery().then((b) => {
+      const sync = () => { battery.level = b.level; battery.charging = b.charging; paintBattery(); };
+      b.addEventListener("levelchange", sync); b.addEventListener("chargingchange", sync); sync();
+    }).catch(() => {});
+  } catch (_) {}
+  paintBattery();
 
   /* ===== 3. Экраны (меню) =====
      Экран = { type, title, sel, scroll, ... }. Экраны лежат в стопке stack: последний на виду.
@@ -121,9 +136,21 @@
         { label: "Шаффл", value: P.shuffle ? "Вкл" : "Выкл", onSelect: () => P.toggleShuffle() },
         { label: "Повтор", value: P.repeat === "all" ? "Все" : P.repeat === "one" ? "Один" : "Выкл", onSelect: () => P.cycleRepeat() },
         { label: "Предложить трек", onSelect: () => { window.open("https://t.me/" + P.telegram + "?text=" + encodeURIComponent("Хочу предложить трек или альбом для плеера northling.space: "), "_blank", "noopener"); } },
-        { label: "Классический вид", onSelect: () => { NL.settings.playerStyle = "classic"; try { localStorage.setItem("northling-settings", JSON.stringify(NL.settings)); } catch (_) {} document.dispatchEvent(new CustomEvent("nl:settings")); } }
+        { label: "Об устройстве", go: true, onSelect: () => push({ type: "about", title: "Об устройстве" }) },
+        { label: "Обычный плеер", onSelect: () => { NL.settings.playerStyle = "classic"; try { localStorage.setItem("northling-settings", JSON.stringify(NL.settings)); } catch (_) {} document.dispatchEvent(new CustomEvent("nl:settings")); } }
       );
       return rows;
+    }
+    if (s.type === "about") {                                      // экран «Об устройстве»: просто строки с информацией
+      let tracks = 0, albums = 0;
+      lib.forEach((a) => a.albums.forEach((al) => { albums++; tracks += al.tracks.length; }));
+      const info = [
+        ["Модель", "northling iPod"], ["Версия сайта", VERSION], ["Адрес", "northling.space"],
+        ["Исполнителей", String(lib.length)], ["Альбомов", String(albums)], ["Треков", String(tracks)],
+        ["В очереди", String(P.queue.length)], ["Заряд", Math.round(battery.level * 100) + "%" + (battery.charging ? " (зарядка)" : "")],
+        ["Серийный №", "NL-0" + VERSION.replace(".", "") + "-2026"], ["Звук колеса", NL.settings && NL.settings.clickSound ? "Вкл" : "Выкл"]
+      ];
+      return info.map(([l, v]) => ({ label: l, value: v, onSelect() {} }));
     }
     if (s.type === "artists") {                                    // исполнители
       if (!lib.length) return [{ label: "Пока пусто", onSelect() {} }];
@@ -198,7 +225,6 @@
         if (r.value) right.append(el("em", "", r.value));
         if (r.go) right.insertAdjacentHTML("beforeend", icon("chevron"));
         row.append(right);
-        row.addEventListener("click", () => { s.sel = i; select(); });   // нажатие пальцем по строке тоже работает
         list.append(row);
       });
       list.style.transform = `translateY(${-s.scroll * ROW_H}px)`;
@@ -308,7 +334,6 @@
   };
   ui.wheel.addEventListener("pointerup", endDrag);
   ui.wheel.addEventListener("pointercancel", () => { down = false; });
-  dev.addEventListener("wheel", (e) => { e.preventDefault(); rotate(e.deltaY > 0 ? 1 : -1); }, { passive: false });   // колесо мыши тоже крутит
 
   /* Центральная кнопка: нажатие = выбрать, удержание = действие «в очередь / убрать» */
   let holdTimer = 0, held = false;
