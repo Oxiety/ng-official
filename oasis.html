@@ -48,7 +48,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <div class="bg" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="grain" aria-hidden="true"></div>
 <header class="top"><div class="pill">
-<a class="brand" href="index.html" aria-label="northling"><span class="orb"><svg class="i" aria-hidden="true"><use href="#i-spark"/></svg></span><b>northling<span>.</span></b></a>
+<a class="brand" href="index.html" aria-label="northling"><span class="orb"><svg class="nlogo" viewBox="0 0 28 28" aria-hidden="true"><defs><linearGradient id="nl-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#dff7ff"/><stop offset="1" stop-color="#9fe9ff"/></linearGradient></defs><path d="M8.4 20.2V8.8M8.4 13.4c0-2.6 2.1-4.2 4.9-4.2 3.1 0 5.1 1.9 5.1 4.9v6.1" fill="none" stroke="url(#nl-g)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23" cy="19.2" r="2.2" fill="#ffb6ee"/></svg></span><b>northling<span>.</span></b></a>
 <nav id="menu" aria-label="Основная навигация"><a href="index.html">Главная</a><a href="arts.html">Арты</a><a href="photos.html">Фотки</a><a href="oasis.html" aria-current="page">Oasis</a><a href="webdev.html">webdev</a></nav>
 <span class="tray"><button class="theme-toggle settings-toggle" type="button" aria-label="Настройки" aria-haspopup="dialog" aria-expanded="false" title="Настройки"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button><span class="clock" id="clock" aria-hidden="true"></span></span>
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
@@ -60,7 +60,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <span class="eyebrow pillish" data-site-content="oasis_hero_eyebrow">Manchester · Creation Records · 1994–2009</span>
 <h1 class="oasis-display"><span data-site-content="oasis_hero_title_line1">LOUD GUITARS.</span><br><span data-site-content="oasis_hero_title_line2">BIG MOUTHS.</span><br><span class="grad" data-site-content="oasis_hero_title_bottom">Oasis.</span></h1>
 <p class="lead" data-site-content="oasis_intro">Я фанат Oasis и хочу поделиться с вами этой группой: её музыкой, альбомами и песнями, к которым хочется возвращаться.</p>
-<div class="actions"><a class="btn primary" href="#albums">Дискография <svg class="i " aria-hidden="true"><use href="#i-down"/></svg></a><a class="btn" href="#listen">Слушать <svg class="i " aria-hidden="true"><use href="#i-play"/></svg></a></div>
+<div class="actions"><button class="btn primary" type="button" data-open-player>Послушать сейчас <svg class="i " aria-hidden="true"><use href="#i-play"/></svg></button><a class="btn" href="#albums">Дискография <svg class="i " aria-hidden="true"><use href="#i-down"/></svg></a><a class="btn" href="#listen">Слушать <svg class="i " aria-hidden="true"><use href="#i-play"/></svg></a></div>
 </div>
 <div class="hero-visual">
 <div class="frame"><img class="oasis-band-image" data-site-image="oasis_cover" data-site-image-fit="oasis_cover_fit" data-site-image-alt="oasis_cover_alt" alt="Oasis" fetchpriority="high"></div>
@@ -109,7 +109,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.2.3</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.3</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
@@ -121,5 +121,6 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <script src="js/game.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/player.js" defer></script>
+<script src="js/ipod.js" defer></script>
 <script src="js/router.js"></script>
 </body></html>

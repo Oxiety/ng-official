@@ -18,10 +18,15 @@
      3. Каркас окна             7. Вкладка «Очередь»
      4. Состояние               8. Вкладка «Предложить»
                                 9. События аудио и запуск
+                               10. Интерфейс для ретро-плеера (NL.player)
+   Этот файл — «движок» плеера (очередь, шаффл, повтор, звук). Классическое окно
+   рисуется здесь же, а ретро-плеер с колесом (js/ipod.js) берёт тот же движок
+   через объект NL.player (раздел 10).
    Файл подключён на всех страницах: <script src="js/player.js" defer>
    ===================================================================== */
 (() => {
   "use strict";
+  const NL = window.NL;
 
   /* ===== 1. Настройки и иконки ===== */
   const DATA_URL = "data/music.json";        // где лежит библиотека
@@ -171,6 +176,8 @@
   let restoreTime = 0;            // куда перемотать после загрузки
   let tab = "library";            // активная вкладка
   let view = { level: "artists", a: 0, b: 0 };   // где мы во вкладке «Музыка»
+  const listeners = new Set();    // подписчики на изменения (ретро-плеер)
+  const emit = () => listeners.forEach((fn) => { try { fn(); } catch (e) { console.error(e); } });
 
   const current = () => queue[qi] || null;
   const save = () => {
@@ -238,16 +245,20 @@
     renderNow(); showPlayState(); renderQueueBadge(); renderTab(); save();
   };
 
-  btnPlay.addEventListener("click", () => {
-    if (!current()) { flash("Выбери трек во вкладке «Музыка»"); return; }
+  const togglePlay = () => {
+    if (!current()) { flash("Выбери трек во вкладке «Музыка»"); return false; }
     if (!audio.src) loadCurrent(true);
     else if (audio.paused) audio.play().catch(() => {});
     else audio.pause();
-  });
+    return true;
+  };
+  btnPlay.addEventListener("click", togglePlay);
   btnPrev.addEventListener("click", prev);
   btnNext.addEventListener("click", () => next(false));
-  btnShuffle.addEventListener("click", () => { shuffle = !shuffle; history = []; showModes(); save(); });
-  btnRepeat.addEventListener("click", () => { repeat = repeat === "all" ? "one" : repeat === "one" ? "off" : "all"; showModes(); save(); });
+  const toggleShuffle = () => { shuffle = !shuffle; history = []; showModes(); save(); };
+  const cycleRepeat = () => { repeat = repeat === "all" ? "one" : repeat === "one" ? "off" : "all"; showModes(); save(); };
+  btnShuffle.addEventListener("click", toggleShuffle);
+  btnRepeat.addEventListener("click", cycleRepeat);
   ui.vol.addEventListener("input", () => { audio.volume = ui.vol.value / 100; save(); });
   ui.seek.addEventListener("input", () => { if (audio.duration) audio.currentTime = (ui.seek.value / 1000) * audio.duration; });
 
@@ -260,12 +271,14 @@
     if (t && t.cover) { const img = el("img"); img.alt = ""; img.decoding = "async"; img.src = t.cover; ui.cover.appendChild(img); }
     else ui.cover.innerHTML = `<span>${icon("note")}</span>`;
     if ("mediaSession" in navigator && t) navigator.mediaSession.metadata = new MediaMetadata({ title: t.title, artist: t.artist, album: t.album });
+    emit();
   };
   const showPlayState = () => {
     const playing = !audio.paused;
     btnPlay.innerHTML = icon(playing ? "pause" : "play");
     btnPlay.title = btnPlay.ariaLabel = playing ? "Пауза" : "Играть";
     button.classList.toggle("is-playing", playing);
+    emit();
   };
   const showModes = () => {
     btnShuffle.classList.toggle("on", shuffle);
@@ -273,6 +286,7 @@
     btnRepeat.classList.toggle("on", repeat !== "off");
     btnRepeat.innerHTML = icon(repeat === "one" ? "repeat1" : "repeat");
     btnRepeat.title = repeat === "all" ? "Повтор: по кругу" : repeat === "one" ? "Повтор: один трек" : "Повтор выключен";
+    emit();
   };
   const markCurrent = () => {                            // подсветить играющий трек в списках
     const id = current() && current().id;
@@ -299,6 +313,7 @@
   const renderQueueBadge = () => {
     const badge = ui.tabs.querySelector(".player-badge");
     badge.hidden = !queue.length; badge.textContent = queue.length;
+    emit();
   };
   const renderTab = () => {
     ui.tabs.querySelectorAll(".player-tab").forEach((b) => {
@@ -450,16 +465,35 @@
   };
 
   /* ===== 9. События аудио и запуск ===== */
-  // Открыть / закрыть окно. Одновременно открыто только одно окно из таскбара (плеер или настройки).
+  // Открыть / закрыть окно. Одновременно открыто только одно окно из таскбара (плеер, ретро-плеер или настройки).
+  // Анимацию даёт NL.showPop (js/core.js).
+  const isOpen = () => NL.isPopOpen(win);
   const setOpen = (open) => {
-    win.hidden = !open;
+    NL.showPop(win, open);
     button.setAttribute("aria-expanded", String(open));
     if (open) document.dispatchEvent(new CustomEvent("nl:popover", { detail: "player" }));
   };
-  button.addEventListener("click", () => setOpen(win.hidden));
+  // Какой плеер сейчас выбран в настройках: классический (это окно) или ретро (js/ipod.js)
+  const retroOn = () => !!(NL.settings && NL.settings.playerStyle === "retro" && NL.retro);
+  const anyOpen = () => isOpen() || (NL.retro && NL.retro.isOpen());
+  const openPlayer = (open) => {
+    if (retroOn()) { setOpen(false); NL.retro.setOpen(open); button.setAttribute("aria-expanded", String(open)); }
+    else { if (NL.retro) NL.retro.setOpen(false); setOpen(open); }
+  };
+  button.addEventListener("click", () => openPlayer(!anyOpen()));
   q(".pop-x").addEventListener("click", () => { setOpen(false); button.focus(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !win.hidden) setOpen(false); });
-  document.addEventListener("nl:popover", (e) => { if (e.detail !== "player" && !win.hidden) setOpen(false); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && isOpen()) setOpen(false); });
+  document.addEventListener("nl:popover", (e) => { if (e.detail !== "player" && isOpen()) setOpen(false); });
+  document.addEventListener("nl:settings", () => {      // сменили стиль плеера, пока он открыт: переключаем окно
+    if (anyOpen()) openPlayer(true);
+  });
+  // Любая кнопка с data-open-player (например «Послушать сейчас» на странице Oasis) открывает плеер
+  document.addEventListener("click", (e) => {
+    const trigger = e.target.closest && e.target.closest("[data-open-player]");
+    if (!trigger) return;
+    e.preventDefault();
+    openPlayer(true);
+  });
 
   audio.addEventListener("play", showPlayState);
   audio.addEventListener("pause", () => { showPlayState(); save(); });
@@ -478,6 +512,7 @@
     ui.cur.textContent = fmt(audio.currentTime);
     if (audio.duration) ui.seek.value = Math.round((audio.currentTime / audio.duration) * 1000);
     if (Date.now() - lastSave > 2000) { lastSave = Date.now(); save(); }
+    emit();
   });
   window.addEventListener("pagehide", save);
   if ("mediaSession" in navigator) {                     // кнопки на экране блокировки / клавиатуре
@@ -496,7 +531,32 @@
       qi = queue.length ? Math.min(Math.max(+saved.i || 0, 0), queue.length - 1) : -1;
       if (queue.length && saved.q[saved.i] && trackById.get(saved.q[saved.i]) !== queue[qi]) qi = 0;
       if (qi >= 0) { audio.src = queue[qi].file; audio.preload = "metadata"; restoreTime = +saved.t || 0; }
-      renderNow(); renderQueueBadge(); renderTab();
+      renderNow(); renderQueueBadge(); renderTab(); emit();
     })
     .catch((e) => { console.error(e); renderTab(); });
+
+  /* ===== 10. Интерфейс для ретро-плеера (NL.player) =====
+     Всё, что нужно ретро-плееру (js/ipod.js): данные библиотеки, очередь, управление
+     и подписка на изменения. Логику второй раз он не пишет. */
+  NL.player = {
+    button,                                                  // кнопка в таскбаре
+    get library() { return library; },                       // исполнители -> альбомы -> треки
+    get queue() { return queue; },
+    get index() { return qi; },
+    get current() { return current(); },
+    get playing() { return !audio.paused; },
+    get time() { return audio.currentTime || 0; },
+    get duration() { return audio.duration || 0; },
+    get shuffle() { return shuffle; },
+    get repeat() { return repeat; },
+    get telegram() { return telegram; },
+    get volume() { return audio.volume; },
+    set volume(v) { audio.volume = Math.min(1, Math.max(0, v)); ui.vol.value = Math.round(audio.volume * 100); save(); emit(); },
+    seek(fraction) { if (audio.duration) audio.currentTime = Math.min(1, Math.max(0, fraction)) * audio.duration; },
+    subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
+    playList, addToQueue, removeFromQueue, clearQueue, toggle: togglePlay,
+    next: () => next(false), prev, toggleShuffle, cycleRepeat,
+    jumpTo(i) { qi = i; history = []; loadCurrent(true); },
+    flash
+  };
 })();

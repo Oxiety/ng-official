@@ -31,6 +31,22 @@ window.NL = (() => {
       pageInits.forEach(fn => { try { fn(); } catch (e) { console.error(e); } });
     },
 
+    /* Плавно показать / спрятать окно (плеер, настройки, ретро-плеер).
+       Окно держит атрибут hidden (чтобы не мешать, пока закрыто) и класс is-open (для анимации в css). */
+    showPop(el, open) {
+      clearTimeout(el._popTimer);
+      if (open) {
+        el.hidden = false;
+        void el.offsetWidth;                         // применить стартовое состояние перед анимацией
+        el.classList.add("is-open");
+      } else {
+        el.classList.remove("is-open");
+        const instant = matchMedia("(prefers-reduced-motion: reduce)").matches || document.documentElement.classList.contains("no-anim");
+        el._popTimer = setTimeout(() => { if (!el.classList.contains("is-open")) el.hidden = true; }, instant ? 0 : 300);
+      }
+    },
+    isPopOpen(el) { return el.classList.contains("is-open"); },
+
     /* Кадрирование картинки (приближение и сдвиг), настраивается в админке ОТДЕЛЬНО для компьютера и телефона.
        fit, fitMobile = { x: 0..100, y: 0..100, z: 1..4 } (любой из них можно не задавать).
        Без fit картинка стоит как раньше; без fitMobile на телефоне действует fit компьютера.

@@ -125,10 +125,32 @@ window.addEventListener('beforeunload',e=>{if(isDirty()){e.preventDefault();e.re
 async function loadFile(f){
   try{
     const r=await gh(repoPath()+'/contents/'+f.file+'?ref='+encodeURIComponent(cfg.branch),{headers:{'Accept':'application/vnd.github.raw+json'}});
-    const data=JSON.parse(await r.text());
+    const data=parseJsonLoose(await r.text(),f.file);
     S.files[f.id]={data,orig:JSON.stringify(data)};
   }catch(e){
     if(e.status===404){S.files[f.id]={data:{},orig:'{}',missing:true}}else throw e;
+  }
+}
+/* Чтение JSON с прощением мелких ошибок: лишние запятые перед } или ] (частый след ручной правки на GitHub)
+   убираются автоматически. При сохранении панель запишет файл уже чистым. Если файл сломан сильнее,
+   ошибка называет файл, строку и показывает место. */
+function parseJsonLoose(text,name){
+  text=text.replace(/^\uFEFF/,'');
+  try{return JSON.parse(text)}catch(first){
+    let out='',inStr=false,esc=false;
+    for(let i=0;i<text.length;i++){
+      const c=text[i];
+      if(inStr){out+=c;if(esc)esc=false;else if(c==='\\')esc=true;else if(c==='"')inStr=false;continue}
+      if(c==='"'){inStr=true;out+=c;continue}
+      if(c===','){let j=i+1;while(j<text.length&&/\s/.test(text[j]))j++;if(text[j]==='}'||text[j]===']')continue}
+      out+=c;
+    }
+    try{const data=JSON.parse(out);console.warn('Файл '+name+': убраны лишние запятые (исправится при сохранении)');return data}catch(_){}
+    const m=/position (\d+)/.exec(first.message);
+    let where='';
+    if(m){const pos=+m[1],before=text.slice(0,pos),line=before.split('\n').length,col=pos-before.lastIndexOf('\n');
+      where=' (строка '+line+', столбец '+col+'): «'+text.slice(Math.max(0,pos-40),pos+20).replace(/\s+/g,' ')+'»'}
+    throw new Error('Файл '+name+' сломан: '+first.message+where);
   }
 }
 async function loadMedia(){
