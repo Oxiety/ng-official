@@ -169,25 +169,274 @@
               "file": "https://audio.jukehost.co.uk/01a1c2e2-03c0-733f-be4a-e68e9a861187"
             }
           ]
+        },
+        {
+          "title": "Oasis Demo Recordings",
+          "tracks": [
+            {
+              "title": "See The Sun (DEMO)",
+              "file": "https://audio.jukehost.co.uk/01a1cbf1-94a2-723c-a45b-ef4ef7565048"
+            }
+          ],
+          "year": "1990s",
+          "cover": "/img/uploads/tmno1pk8gfz71-nq2xv.png"
         }
       ]
     },
     {
-      "name": "Tom Petty (TEST)",
+      "name": "Radiohead",
       "albums": [
         {
-          "title": "Ya Ne Ebu",
+          "title": "The Bends",
           "tracks": [
             {
-              "title": "Love Is A Long Road",
-              "file": "https://audio.jukehost.co.uk/5a151631-40b0-11f1-a012-fa163edb0845"
+              "title": "Planet Telex",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a958-73a0-a6e3-b6159d96869f"
+            },
+            {
+              "title": "The Bends",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-aa09-7003-9e25-a760728a226c"
+            },
+            {
+              "title": "High and Dry",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-aa43-739f-b2f9-968399eee8eb"
+            },
+            {
+              "title": "Fake Plastic Trees",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a988-73ee-b666-06ac8743f513"
+            },
+            {
+              "title": "Bones",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a90e-7210-9ba7-108ec6144bab"
+            },
+            {
+              "title": "(Nice Dream)",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a9d6-71ed-b42b-6158d9175815"
+            },
+            {
+              "title": "Just",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-aa03-7151-a66f-7dcdeef86cb7"
+            },
+            {
+              "title": "My Iron Lung",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-aa65-7178-9bd1-bdaf8d1cb13b"
+            },
+            {
+              "title": "Black Star",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a88d-7100-a17e-075d6316a380"
+            },
+            {
+              "title": "Bullet Proof... I Wish I Was",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a931-70bf-929a-590f36dbeb08"
+            },
+            {
+              "title": "Sulk",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-a9ae-728e-8ee7-ce230999bda5"
+            },
+            {
+              "title": "Street Spirit (Fade Out)",
+              "file": "https://audio.jukehost.co.uk/01a1cbea-aa43-716a-9abf-d8d2b2510d95"
             }
           ],
-          "year": "????",
-          "cover": "/img/uploads/649228533-18436901365117817-334018345529-qegpy.jpg"
+          "year": "1995",
+          "cover": "/img/uploads/2026-11-11-205446893-6uorj.png"
+        },
+        {
+          "title": "OK Computer",
+          "tracks": [
+            {
+              "title": "Airbag",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4e82-7039-9199-496d5bc2c342"
+            },
+            {
+              "title": "Paranoid Android",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4fee-7040-95bb-5dc4a69750ca"
+            },
+            {
+              "title": "Subterranean Homesick Alien",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4e12-70b6-ac2c-f05118a23eb4"
+            },
+            {
+              "title": "Exit Music (For A Film)",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4c0f-7057-9495-27c4c9da8c49"
+            },
+            {
+              "title": "Let Down",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4cb2-7239-9eb7-37ee3f18e977"
+            },
+            {
+              "title": "Karma Police",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4d49-7292-9bc5-71472a85c277"
+            },
+            {
+              "title": "Fitter Happier",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4b10-7150-a9c9-5a04706207b5"
+            },
+            {
+              "title": "Electioneering",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4d17-708d-a440-62ca5e89a032"
+            },
+            {
+              "title": "Climbing Up The Walls",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4df5-7222-9ef2-ec87880d1da2"
+            },
+            {
+              "title": "No Surprises",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4d34-700b-90f2-731e7df5337b"
+            },
+            {
+              "title": "Lucky",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4c33-724e-a597-fae70e253c55"
+            },
+            {
+              "title": "The Tourist",
+              "file": "https://audio.jukehost.co.uk/01a1cbf0-4eaa-71a2-8e06-5a36bd28b9bf"
+            }
+          ],
+          "year": "1997",
+          "cover": "/img/uploads/2026-11-11-205504703-monle.png"
         }
       ],
-      "image": "/img/uploads/649228533-18436901365117817-334018345529-47cgy.jpg"
+      "image": "/img/uploads/2026-11-11-205901858-gusk2.png"
+    },
+    {
+      "name": "Depeche Mode",
+      "albums": [
+        {
+          "title": "Music For The Masses",
+          "tracks": [
+            {
+              "title": "Never Let Me Down Again",
+              "file": "https://audio.jukehost.co.uk/01a1cbf1-7b49-714f-9dd9-1667c1df8a18"
+            }
+          ],
+          "year": "1988",
+          "cover": "/img/uploads/2026-11-11-205030209-i7rsf.png"
+        }
+      ],
+      "image": "/img/uploads/2026-11-11-205059135-t2yuf.png"
+    },
+    {
+      "name": "Yung Lean",
+      "albums": [
+        {
+          "title": "Unknown Memory",
+          "tracks": [
+            {
+              "title": "Blommor (Intro)",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ac12-71a7-a32f-fa3b60cb004c"
+            },
+            {
+              "title": "Blinded",
+              "file": "https://audio.jukehost.co.uk/01a1cbee-1aa7-708d-8a29-0183398ab268"
+            },
+            {
+              "title": "Sunrise Angel",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ad3a-73fd-86df-ca4d66d41508"
+            },
+            {
+              "title": "Yoshi City",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ae11-71b5-9a68-71e85a5a4aa3"
+            },
+            {
+              "title": "Ice Cold Smoke",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ac2e-70e3-b4c8-7dff834b8373"
+            },
+            {
+              "title": "Dog Walk (Intermission)",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-abc6-7306-b5a7-d2f35794af52"
+            },
+            {
+              "title": "Don't Go",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ae1c-717d-93aa-6ee06cc71696"
+            },
+            {
+              "title": "Ghosttown",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-af6c-7161-8b39-7d79d78edc5f"
+            },
+            {
+              "title": "Monster",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-acc4-722b-a54d-7296c6c160ac"
+            },
+            {
+              "title": "Volt",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ad90-72b3-a553-ebb984b12702"
+            },
+            {
+              "title": "Leanworld",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ae70-7022-96ec-ee897b034fcb"
+            },
+            {
+              "title": "Sandman",
+              "file": "https://audio.jukehost.co.uk/01a1cbeb-ad70-71fa-bfb8-f108a3dd77e2"
+            }
+          ],
+          "year": "2014",
+          "cover": "/img/uploads/2026-11-11-210230861-50ubz.png"
+        }
+      ],
+      "image": "/img/uploads/2026-11-11-205933487-4wfxm.png"
+    },
+    {
+      "name": "Pulp",
+      "albums": [
+        {
+          "title": "Different Class",
+          "tracks": [
+            {
+              "title": "Mis-Shapes",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7d5b-70ff-b390-efc2eb0dd188"
+            },
+            {
+              "title": "Pencil Skirt",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7cf8-7388-a451-e4b8525e43c4"
+            },
+            {
+              "title": "Common People",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7efb-7277-bc09-97b769956c94"
+            },
+            {
+              "title": "I Spy",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7ed8-7364-8995-48221926e645"
+            },
+            {
+              "title": "Disco 2000",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7dcd-707c-94e0-883d9b79591b"
+            },
+            {
+              "title": "Live Bed Show",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7cc4-722c-b0eb-824068948e51"
+            },
+            {
+              "title": "Something Changed",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7d01-725e-b057-7e13f8f3e68b"
+            },
+            {
+              "title": "Sorted For E's & Wizz",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7d04-717e-88dd-d3c65576afb8"
+            },
+            {
+              "title": "F.E.E.L.I.N.G.C.A.L.L.E.D.L.O.V.E.",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7da6-7245-8144-0c2fac44c753"
+            },
+            {
+              "title": "Underwear",
+              "file": "https://audio.jukehost.co.uk/01a1cc02-7695-7309-a46d-ecf24e3079e9"
+            },
+            {
+              "title": "Monday Morning",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7d7f-70fa-b4ca-a6ffb0ce34e1"
+            },
+            {
+              "title": "Bar Italia",
+              "file": "https://audio.jukehost.co.uk/01a1cbef-7d34-7393-8ef9-7b2282ab3296"
+            }
+          ],
+          "year": "1995",
+          "cover": "/img/uploads/2026-11-11-210558777-7va8f.png"
+        }
+      ],
+      "image": "/img/uploads/2026-11-11-210359404-nw1mi.png"
     }
   ]
 }
