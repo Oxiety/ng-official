@@ -43,11 +43,15 @@ input:focus,textarea:focus,select:focus{outline:2px solid var(--acc);outline-off
 details.item{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.05);margin:0 0 10px}
 details.item>summary{list-style:none;cursor:pointer;padding:10px 12px;display:flex;gap:8px;align-items:center}
 details.item>summary::-webkit-details-marker{display:none}
+.grip{flex:none;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;padding:2px 6px;color:var(--muted);font-size:20px;line-height:1;border-radius:8px}
+.grip:hover{color:var(--acc);background:rgba(255,255,255,.08)}.grip:active{cursor:grabbing}
+.dragging{position:relative;z-index:5;box-shadow:0 10px 30px rgba(0,0,0,.45);opacity:.92;background:rgba(40,30,110,.9)}
+.dropline{position:absolute;left:0;right:0;height:4px;border-radius:4px;background:var(--acc);pointer-events:none;z-index:6}
 details.item>summary:before{content:"▸";color:var(--acc)}
 details.item[open]>summary:before{content:"▾"}
 details.item>summary .t{flex:1;font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 details.item>.body{padding:4px 12px 8px}
-.prim{display:flex;gap:6px;margin:0 0 8px}
+.prim{display:flex;gap:6px;margin:0 0 8px;align-items:center}
 .sub{margin:10px 0 14px;padding-left:10px;border-left:2px solid var(--line)}
 .thumb{width:84px;height:84px;object-fit:cover;border-radius:10px;border:2px solid #fff;background:#fff2;flex:none}
 .imgc{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
@@ -391,24 +395,60 @@ function summaryOf(f,item){
   return s||'(без названия)';
 }
 function listControl(f,arr){
-  const box=h('div',{});
+  const box=h('div',{style:'position:relative'});
   const prim=!f.fields;
-  const move=(i,d)=>{const j=i+d;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];touch();draw()};
   const del=i=>{if(!confirm('Удалить этот элемент?'))return;arr.splice(i,1);touch();draw()};
+  /* Перетаскивание: тяни за «ручку» ⠿ (мышкой или пальцем), отпусти там, где должен стоять элемент */
+  function startDrag(e,i,grip){
+    if(e.button>0)return;e.preventDefault();
+    const rows=[...box.children].filter(n=>n.matches('.prim,details.item'));
+    const row=rows[i];if(!row)return;
+    grip.setPointerCapture(e.pointerId);
+    const wasOpen=rows.map(r=>r.tagName==='DETAILS'&&r.open);
+    rows.forEach(r=>{if(r.tagName==='DETAILS')r.open=false});      // свёрнутые карточки легче таскать
+    row.classList.add('dragging');
+    const line=h('div',{class:'dropline'});box.append(line);
+    const y0=e.clientY;let to=i,lastY=y0;
+    const update=()=>{
+      const R=rows.map(r=>{const t=r.style.transform;r.style.transform='';const b=r.getBoundingClientRect();r.style.transform=t;return b});
+      const bt=box.getBoundingClientRect().top;
+      let k=R.findIndex(b=>lastY<b.top+b.height/2);if(k<0)k=rows.length;to=k;
+      line.style.top=((k<rows.length?R[k].top:R[rows.length-1].bottom)-bt-2)+'px';
+      row.style.transform='translateY('+(lastY-y0)+'px)';
+    };
+    const move=ev=>{
+      lastY=ev.clientY;
+      if(ev.clientY<70)scrollBy(0,-14);else if(ev.clientY>innerHeight-70)scrollBy(0,14);   // у края экрана — прокрутка
+      update();
+    };
+    const end=ev=>{
+      grip.removeEventListener('pointermove',move);grip.removeEventListener('pointerup',end);grip.removeEventListener('pointercancel',end);
+      line.remove();row.classList.remove('dragging');row.style.transform='';
+      if(ev.type!=='pointercancel'&&to!==i&&to!==i+1){
+        const it=arr.splice(i,1)[0];arr.splice(to>i?to-1:to,0,it);touch();draw();
+      }else rows.forEach((r,k)=>{if(wasOpen[k])r.open=true});
+    };
+    grip.addEventListener('pointermove',move);grip.addEventListener('pointerup',end);grip.addEventListener('pointercancel',end);
+    update();
+  }
   function draw(){
     box.innerHTML='';
     arr.forEach((item,i)=>{
-      const ctrl=(extra)=>[
-        h('button',{type:'button',class:'btn sm',title:'Вверх',onclick:e=>{e.preventDefault();move(i,-1)}},'↑'),
-        h('button',{type:'button',class:'btn sm',title:'Вниз',onclick:e=>{e.preventDefault();move(i,1)}},'↓'),
+      const grip=()=>{
+        const g=h('span',{class:'grip',title:'Потяни, чтобы переместить'},'⠿');
+        g.addEventListener('click',e=>{e.preventDefault();e.stopPropagation()});   // чтобы не раскрывалась карточка
+        g.addEventListener('pointerdown',e=>startDrag(e,i,g));
+        return g;
+      };
+      const ctrl=()=>[
         h('button',{type:'button',class:'btn sm danger',title:'Удалить',onclick:e=>{e.preventDefault();del(i)}},'✕')];
       if(prim){
         const inp=h('input',{type:'text',value:item,autocomplete:'off'});
         inp.addEventListener('input',()=>{arr[i]=inp.value;touch()});
-        box.append(h('div',{class:'prim'},inp,...ctrl()));
+        box.append(h('div',{class:'prim'},grip(),inp,...ctrl()));
       }else{
         const title=h('span',{class:'t'},summaryOf(f,item));
-        const det=h('details',{class:'item'},h('summary',{},title,...ctrl()));
+        const det=h('details',{class:'item'},h('summary',{},grip(),title,...ctrl()));
         const body=h('div',{class:'body'});
         renderFields(f.fields,item,body,true);
         body.addEventListener('input',()=>{title.textContent=summaryOf(f,item)});
