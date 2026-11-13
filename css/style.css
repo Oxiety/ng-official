@@ -1296,3 +1296,108 @@ html.no-anim .ipod-view{animation:none!important}
 .ipod-batt .bt.chg i{animation:ip-chg 1.2s ease-in-out infinite alternate}
 @keyframes ip-chg{from{opacity:.4}}
 .irow{cursor:default}
+
+/* =====================================================================
+   2.4: Интерактивчик, Аниме-уголок, появление при прокрутке
+   ===================================================================== */
+.btn.ghost{background:transparent}
+.arc-grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:30px 26px;width:min(1180px,calc(100% - 40px));margin:14px auto 60px;align-items:start}
+.arc-win{margin:0}
+.a-slots{grid-column:1/6}.a-rou{grid-column:6/13}.a-term{grid-column:1/13}
+.a-room{grid-column:1/13}.a-scene{grid-column:1/8}.a-pick{grid-column:8/13}
+@media(max-width:900px){.arc-grid{grid-template-columns:minmax(0,1fr);gap:24px}.arc-grid>*{grid-column:1/-1!important}}
+
+/* кошелёк */
+.wallet{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:20px;padding:10px 14px;width:fit-content;max-width:100%;border:1px solid var(--line2);border-radius:999px;background:rgba(255,255,255,.07)}
+.wallet b{font:800 22px var(--body);min-width:3ch}.wallet small{color:var(--muted);font:700 12px var(--body)}.wcoin{font-size:22px}
+.arc-msg{min-height:1.6em;margin:14px 0 10px;text-align:center;font:800 15px var(--body);color:var(--soft)}
+.arc-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.arc-pick{margin:12px 0;color:var(--soft);font:600 14px var(--body)}
+.bets,.modes,.choices{display:flex;flex-wrap:wrap;gap:6px}
+.bets button,.modes button,.choices button{padding:7px 13px;border-radius:999px;border:1px solid var(--line2);background:rgba(255,255,255,.07);color:var(--text);font:800 12px var(--body);cursor:pointer;transition:transform .15s,background .15s}
+.bets button:hover,.modes button:hover,.choices button:hover{background:rgba(255,255,255,.16);transform:translateY(-1px)}
+.bets button.on,.modes button.on,.choices button.on{background:var(--accent);color:#10101b;border-color:transparent}
+.choices .red:not(.on){box-shadow:inset 0 0 0 1px #e0475b;color:#ff9aa8}.choices .black:not(.on){box-shadow:inset 0 0 0 1px #6c6a8a}
+.paytable{margin-top:14px;color:var(--muted);font:600 13px/1.5 var(--body)}.paytable summary{cursor:pointer;font-weight:800;color:var(--soft)}
+
+/* слоты */
+.reels{display:flex;gap:10px;justify-content:center;padding:14px;border-radius:18px;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.15));border:1px solid var(--line2);transition:box-shadow .3s}
+.reel{width:min(92px,26vw);height:84px;overflow:hidden;border-radius:12px;background:linear-gradient(180deg,#f4f0ff,#d7ccff 50%,#f4f0ff);box-shadow:inset 0 6px 10px rgba(40,20,120,.35),inset 0 -6px 10px rgba(40,20,120,.35)}
+.strip{will-change:transform}.strip i{display:block;height:84px;line-height:84px;text-align:center;font-size:46px;font-style:normal}
+.slots.win .reels{box-shadow:0 0 26px var(--accent)}
+.slots.jackpot .reels{animation:jackpot .5s ease 4}
+@keyframes jackpot{50%{box-shadow:0 0 50px #ffe36a,0 0 90px var(--accent)}}
+
+/* рулетка */
+.rou{display:flex;gap:22px;align-items:center;flex-wrap:wrap;justify-content:center}
+.wheel-stage{position:relative;width:280px;height:280px;flex:none}
+.wheel-rot{position:absolute;inset:0;border-radius:50%;box-shadow:0 10px 36px rgba(0,0,0,.5),0 0 0 4px rgba(255,255,255,.25)}
+.wheel-rot canvas{display:block;border-radius:50%}
+.wheel-ptr{position:absolute;left:50%;top:-8px;margin-left:-9px;z-index:3;border:9px solid transparent;border-top:15px solid #ffe36a;filter:drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.ball-ring{position:absolute;inset:0;z-index:2}
+.ball{position:absolute;left:50%;top:34px;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#cfd3e6);box-shadow:0 1px 4px rgba(0,0,0,.6)}
+.rou-side{flex:1;min-width:220px}
+.hist{display:flex;flex-wrap:wrap;gap:4px;min-height:26px;margin:0 0 12px}
+.num{display:inline-grid;place-items:center;min-width:28px;height:26px;padding:0 4px;border:0;border-radius:7px;color:#fff;font:800 12px var(--body)}
+.num.red{background:#c8283d}.num.black{background:#1b1838}.num.green{background:#1c9a52}
+.numgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:5px;margin-top:18px}
+.numgrid .num{cursor:pointer;height:32px;transition:transform .12s}.numgrid .num:hover{transform:scale(1.1)}
+.numgrid .num.on{outline:3px solid #ffe36a;outline-offset:1px}
+html[data-theme="light"] .num.black{background:#34305c}
+
+/* терминал */
+.term{position:relative;height:360px;overflow:auto;padding:14px 16px;border-radius:10px;border:1px solid var(--line2);background:#07060f;color:#d7f7e1;font:500 14px/1.55 var(--mono);cursor:text;overscroll-behavior:contain}
+.term pre{margin:0;font:inherit;white-space:pre;overflow-x:auto}
+.term .tl{position:relative;z-index:1;white-space:pre-wrap;word-break:break-word}
+.term .tl.err{color:#ff8a9a}.term .tl.dim{color:#7f8aa8}.term .tl b{color:#fff}
+.term .pr{color:#8affb0;margin-right:8px}
+#termForm{position:relative;z-index:1;display:flex;align-items:center}
+#termInput{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;font:inherit;caret-color:#8affb0;padding:0}
+#termMatrix{position:absolute;left:0;top:0;width:100%;height:100%;z-index:0;opacity:.85}
+.term .nf b{color:var(--accent)}
+
+/* аниме: комната с фонариком */
+.room{position:relative;--mx:50%;--my:62%;--rx:0deg;--ry:0deg;border-radius:12px;overflow:hidden;cursor:crosshair;touch-action:pan-y;perspective:1100px;background:#0b0a14}
+.room-in{position:relative;transform:rotateX(var(--rx)) rotateY(var(--ry)) scale(1.04);transition:transform .25s ease-out}
+.room-in img{display:block;width:100%;height:auto}
+.room-dark{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle min(44vw,340px) at var(--mx) var(--my),rgba(4,3,12,0) 0,rgba(4,3,12,.18) 45%,rgba(4,3,12,.74) 100%);transition:background .12s}
+.room.flick .room-dark{background:rgba(4,3,12,.96)}
+.room-vhs{position:absolute;inset:0;pointer-events:none;mix-blend-mode:multiply;opacity:.32;background:repeating-linear-gradient(0deg,rgba(0,0,0,.5) 0 1px,transparent 1px 3px);animation:vhs 7s steps(2) infinite}
+@keyframes vhs{50%{transform:translateY(1.5px)}}
+.a-room figcaption{margin:12px 2px 0}
+
+/* аниме: сцена и гача */
+.scene-box{border-radius:12px;overflow:hidden;border:1px solid var(--line2);margin-bottom:12px}
+#scene{display:block;width:100%;height:300px;touch-action:pan-y}
+.pick-h{font:800 20px var(--body);margin:0 0 14px}
+.pick-card{display:flex;flex-direction:column;gap:4px;min-height:170px;margin-bottom:14px;padding:16px;border-radius:14px;border:1px solid var(--line2);background:linear-gradient(160deg,rgba(255,255,255,.1),rgba(255,255,255,.03))}
+.pick-card small{color:var(--accent);font:700 11px var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.pick-card b{font:800 22px/1.2 var(--body)}.pick-card span{color:var(--muted);font:700 13px var(--body)}
+.pick-card p{margin:6px 0 0;color:var(--soft);font:600 14px/1.5 var(--body)}
+.pick-card.pop{animation:pickpop .45s cubic-bezier(.2,1.2,.3,1)}
+@keyframes pickpop{from{opacity:0;transform:translateY(10px) scale(.96)}}
+.pick-hist{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:14px 0 0;padding:0}
+.pick-hist li{padding:4px 10px;border-radius:999px;border:1px solid var(--line2);font:700 12px var(--body);color:var(--muted)}
+
+/* появление при прокрутке (js/fx.js) */
+.reveal{opacity:0;translate:0 20px;transition:opacity .6s ease var(--rd,0ms),translate .65s cubic-bezier(.2,.8,.2,1) var(--rd,0ms)}
+.reveal.in{opacity:1;translate:none}
+html.no-anim .reveal{opacity:1;translate:none;transition:none}
+
+/* konami */
+html.konami{animation:konami 2.4s ease}
+@keyframes konami{50%{filter:hue-rotate(180deg) saturate(1.5)}}
+@media(prefers-reduced-motion:reduce){html.konami{animation:none}.room-vhs{animation:none}.reveal{opacity:1;translate:none;transition:none}}
+.btn[hidden],#termMatrix[hidden]{display:none!important}
+
+/* 2.4: в таскбаре теперь 7 вкладок, на средних экранах сжимаем кнопки */
+@media(min-width:761px) and (max-width:1180px){
+  html[data-theme] nav a{padding:0 11px;font-size:13px}
+  html[data-theme] nav{gap:4px}
+  html[data-theme] .pill{gap:8px}
+}
+@media(min-width:761px) and (max-width:920px){
+  html[data-theme] nav a{padding:0 7px;font-size:12px}
+  .brand b{display:none}
+  .clock{display:none}
+}

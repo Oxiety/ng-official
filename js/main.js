@@ -60,6 +60,7 @@ if(toggle&&nav){
 /* ——— всплывашка «Скопировано» ——— */
 const toast=$('.toast');let toastTimer;
 const say=t=>{if(!toast)return;toast.textContent=t;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),2200)};
+NL.toast=say;
 
 /* =============== ЧАСТЬ 2. СТРАНИЦА (при каждом переходе) =============== */
 NL.onPage(()=>{

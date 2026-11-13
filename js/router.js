@@ -11,7 +11,7 @@
 (() => {
   "use strict";
   const NL = window.NL;
-  const PAGES = ["index", "arts", "photos", "oasis", "webdev"];
+  const PAGES = ["index", "arts", "photos", "oasis", "webdev", "interactive", "anime"];
   const pageKey = (path) => {                       // "/arts.html" -> "arts", "/" -> "index"
     const name = path.replace(/^\/+/, "").replace(/\.html$/, "") || "index";
     return PAGES.includes(name) ? name : null;
