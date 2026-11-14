@@ -9,6 +9,7 @@
 <meta property="og:description" content="Аниме-уголок: тёмная комната, сцены с частицами и случайная рекомендация.">
 <meta property="og:image" content="img/anime/room.jpg">
 <title>Аниме · northling</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Press+Start+2P&family=VT323&display=swap">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -24,7 +25,7 @@ const weak=(m&&m<=2)||(c&&c<=2)||(d&&d.saveData)||(c&&c<=4&&m&&m<=4);
 if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-anim')}catch(_){}
 </script>
 </head>
-<body class="">
+<body class="anime-page">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M7 17 17 7M8 7h9v9"/></symbol>
 <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
@@ -54,26 +55,43 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
 </div></header>
 <main id="anime">
-<section class="hero" style="padding-bottom:20px"><div class="wrap">
-<span class="eyebrow pillish">аниме-уголок</span>
-<h1>Аниме <span class="grad">уголок.</span></h1>
-<p class="lead">Тёмная комната, фонарик и немного настроения. Тут можно покрутить погоду и выбрать, что посмотреть вечером.</p>
+<section class="px-hero">
+<canvas id="pxScene" class="px-canvas" aria-hidden="true"></canvas>
+<div class="px-hero-text">
+<span class="px-tag">ANIME CORNER</span>
+<h1 class="px-title"><span lang="ja">アニメ</span><small>уголок</small></h1>
+<p class="px-sub" lang="ja">夜の町、遠くの電車。</p>
+<p class="px-sub-ru">Ночной город и далёкий поезд. Присаживайся.</p>
+</div>
+</section>
+<div class="px-grid">
+<section class="px-win px-quote"><div class="px-bar"><span lang="ja">名言</span><span>quotes.txt</span></div>
+<div class="px-in">
+<p class="q-jp" id="qJp" lang="ja" aria-live="polite"></p>
+<p class="q-ru" id="qRu"></p>
+<p class="q-src" id="qSrc"></p>
+<div class="px-row"><button class="px-btn" id="qPrev" type="button">&lt; назад</button><button class="px-btn" id="qNext" type="button">дальше &gt;</button></div>
+<p class="px-note">Цитаты по памяти, переводы вольные.</p>
 </div></section>
-<div class="arc-grid">
-<figure class="win arc-win a-room"><span class="eyebrow">room.jpg</span>
-<div class="room" id="room"><div class="room-in"><img src="img/anime/room.jpg" alt="Тёмная комната с обоями, арка и девушка-аниме за столом с тарелкой" width="1276" height="715" decoding="async"><div class="room-dark"></div><div class="room-vhs"></div></div></div>
-<figcaption class="muted small">Мышка или палец — это фонарик. Клик — моргает свет.</figcaption></figure>
-<section class="win arc-win a-scene"><span class="eyebrow">scene.exe</span>
-<div class="scene-box"><canvas id="scene" aria-label="Анимированная сцена с частицами"></canvas></div>
-<div class="modes" id="sceneModes"><button type="button" data-m="sakura" class="on">Сакура</button><button type="button" data-m="rain">Дождь</button><button type="button" data-m="fireflies">Светлячки</button><button type="button" data-m="snow">Снег</button></div>
-<p class="muted small" style="margin:10px 0 0">Води курсором по сцене: ветер и светлячки реагируют.</p>
-</section>
-<section class="win arc-win a-pick"><span class="eyebrow">gacha.exe</span>
-<h2 class="pick-h">Что посмотреть?</h2>
-<div class="pick-card" id="pickCard"><small>нажми кнопку</small><b>?</b><span></span><p>Я случайно выберу тебе тайтл из своей подборки.</p></div>
-<button class="btn primary" id="pickRoll" type="button">Крутануть</button>
-<ul class="pick-hist" id="pickHist" aria-label="Что выпадало"></ul>
-</section>
+<figure class="px-win px-frame"><div class="px-bar"><span lang="ja">思い出</span><span>frame.png</span></div>
+<div class="px-in"><img src="img/anime/room.jpg" alt="Тёмная комната с обоями, арка и девушка-аниме за столом с тарелкой" width="1276" height="715" decoding="async" loading="lazy"><figcaption>кадр, который запомнился</figcaption></div></figure>
+<section class="px-win px-weather"><div class="px-bar"><span lang="ja">天気</span><span>weather.exe</span></div>
+<div class="px-in"><canvas id="scene" aria-label="Пиксельная сцена с погодой"></canvas>
+<div class="px-row" id="sceneModes"><button class="px-btn on" type="button" data-m="sakura">сакура</button><button class="px-btn" type="button" data-m="rain">дождь</button><button class="px-btn" type="button" data-m="fireflies">светлячки</button><button class="px-btn" type="button" data-m="snow">снег</button></div>
+<p class="px-note">Води курсором: ветер и светлячки откликаются.</p></div></section>
+<section class="px-win px-gacha"><div class="px-bar"><span lang="ja">何を見る？</span><span>gacha.exe</span></div>
+<div class="px-in gacha-in">
+<div class="g-left">
+<p class="px-h">Что посмотреть?</p>
+<div class="px-chips" id="gTags" aria-label="Жанры"></div>
+<label class="px-check"><input type="checkbox" id="gSkipSeen" checked> не повторять уже просмотренное</label>
+<button class="px-btn big" id="gRoll" type="button">крутануть</button>
+<div class="g-card" id="gCard"><small>нажми кнопку</small><b>?</b><span></span><p>Случайный тайтл из подборки. Можно сузить жанром.</p></div>
+<div class="px-row"><button class="px-btn" id="gWant" type="button" disabled>хочу</button><button class="px-btn" id="gSeen" type="button" disabled>смотрел</button></div>
+<p class="px-h sm">Хочу посмотреть <span id="wantN">0</span></p><div class="px-chips mini" id="gWantList"></div>
+</div>
+<div class="g-right"><p class="px-h sm">Все тайтлы <span id="allN"></span></p><div class="g-all" id="gAll" role="list"></div></div>
+</div></section>
 </div>
 </main>
 <footer class="footer"><div class="wrap footrow">
@@ -90,6 +108,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <script src="js/fx.js"></script>
 <script src="js/arcade.js"></script>
 <script src="js/anime.js"></script>
+<script src="js/terminal.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/player.js" defer></script>
 <script src="js/ipod.js" defer></script>
