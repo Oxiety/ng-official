@@ -9,7 +9,12 @@
    ===================================================================== */
 NL.onPage(() => {
   "use strict";
-  if (!document.querySelector("#anime")) return;
+  const rootEl = document.querySelector("#anime");
+  if (!rootEl) return;
+  /* Тексты, цитаты и список аниме лежат в data/anime.json (правятся в админке, вкладка «Аниме») */
+  NL.loadTx("data/anime.json", rootEl).then((C) => { if (NL.signal.aborted) return; start(C); });
+  function start(C) {
+  const L = (k, d = "") => (typeof C[k] === "string" ? C[k] : d);
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const signal = NL.signal;
@@ -97,15 +102,8 @@ NL.onPage(() => {
   }
 
   /* ===== 3. Цитаты ===== */
-  const QUOTES = [
-    ["逃げちゃだめだ。", "Нельзя убегать.", "Neon Genesis Evangelion"],
-    ["笑えばいいと思うよ。", "Думаю, нужно просто улыбнуться.", "Neon Genesis Evangelion"],
-    ["俺を信じろ。お前を信じる俺を信じろ。", "Верь в меня. Верь в меня, который верит в тебя.", "Tengen Toppa Gurren Lagann"],
-    ["諦めたらそこで試合終了ですよ。", "Если сдашься, на этом игра закончится.", "Slam Dunk"],
-    ["一度あったことは忘れないものさ。思い出せないだけで。", "Случившееся не забывается. Ты просто не можешь вспомнить.", "Spirited Away"],
-    ["俺は海賊王になる！", "Я стану Королём пиратов!", "One Piece"],
-    ["等価交換。", "Равноценный обмен.", "Fullmetal Alchemist"]
-  ];
+  const QUOTES = (Array.isArray(C.quotes) ? C.quotes : []).filter((q) => q && (q.jp || q.ru)).map((q) => [q.jp || "", q.ru || "", q.src || ""]);
+  if (!QUOTES.length) QUOTES.push(["", "", ""]);
   const qJp = $("#qJp"), qRu = $("#qRu"), qSrc = $("#qSrc"); let qi = ri(QUOTES.length), typing = 0, auto = 0;
   const showQuote = (i) => {
     qi = (i + QUOTES.length) % QUOTES.length; const [jp, ru, src] = QUOTES[qi];
@@ -168,17 +166,17 @@ NL.onPage(() => {
   try { const m = JSON.parse(localStorage.getItem(KEY)); if (m) mine = { want: m.want || [], seen: m.seen || [] }; } catch (_) {}
   const saveMine = () => { try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch (_) {} };
   const gCard = $("#gCard"), gAll = $("#gAll"), gTags = $("#gTags"), gWant = $("#gWant"), gSeen = $("#gSeen"), wantList = $("#gWantList");
-  let list = [], tag = "все", cur = null;
+  let list = [], tag = "", cur = null, ALL = "все";
   const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-  const filtered = () => list.filter((a) => tag === "все" || a.tags.includes(tag));
+  const filtered = () => list.filter((a) => tag === ALL || a.tags.includes(tag));
   const paintAll = () => {
     const f = filtered(); $("#allN").textContent = "(" + f.length + ")";
     gAll.innerHTML = f.map((a) => `<button type="button" role="listitem" class="g-item${mine.seen.includes(a.t) ? " seen" : ""}${cur && cur.t === a.t ? " on" : ""}" data-t="${esc(a.t)}"><b>${esc(a.t)}</b><i>${a.y}</i></button>`).join("");
   };
   const paintMine = () => {
     $("#wantN").textContent = "(" + mine.want.length + ")";
-    wantList.innerHTML = mine.want.length ? mine.want.map((t) => `<span class="px-chip">${esc(t)}<button type="button" data-rm="${esc(t)}" aria-label="Убрать">x</button></span>`).join("") : '<em class="px-note">пока пусто</em>';
-    gWant.textContent = cur && mine.want.includes(cur.t) ? "убрать из «хочу»" : "хочу"; gSeen.textContent = cur && mine.seen.includes(cur.t) ? "не смотрел" : "смотрел";
+    wantList.innerHTML = mine.want.length ? mine.want.map((t) => `<span class="px-chip">${esc(t)}<button type="button" data-rm="${esc(t)}" aria-label="Убрать">x</button></span>`).join("") : `<em class="px-note">${esc(L("want_empty"))}</em>`;
+    gWant.textContent = cur && mine.want.includes(cur.t) ? L("btn_unwant", "убрать из «хочу»") : L("btn_want", "хочу"); gSeen.textContent = cur && mine.seen.includes(cur.t) ? L("btn_unseen", "не смотрел") : L("btn_seen", "смотрел");
   };
   const show = (a) => {
     cur = a; gCard.classList.remove("pop"); void gCard.offsetWidth; gCard.classList.add("pop");
@@ -187,7 +185,7 @@ NL.onPage(() => {
   };
   const roll = () => {
     let pool = filtered(); if ($("#gSkipSeen").checked) { const fresh = pool.filter((a) => !mine.seen.includes(a.t)); if (fresh.length) pool = fresh; }
-    if (!pool.length) { gCard.innerHTML = "<small>пусто</small><b>Ничего не нашлось</b><p>Смени жанр.</p>"; return; }
+    if (!pool.length) { gCard.innerHTML = `<small></small><b>${esc(L("card_empty_title"))}</b><p>${esc(L("card_empty_text"))}</p>`; return; }
     let a; do { a = pool[ri(pool.length)]; } while (pool.length > 1 && cur && a.t === cur.t); show(a);
   };
   $("#gRoll").addEventListener("click", roll, { signal });
@@ -196,11 +194,12 @@ NL.onPage(() => {
   gWant.addEventListener("click", () => { if (!cur) return; const i = mine.want.indexOf(cur.t); if (i >= 0) mine.want.splice(i, 1); else mine.want.push(cur.t); saveMine(); paintMine(); }, { signal });
   gSeen.addEventListener("click", () => { if (!cur) return; const i = mine.seen.indexOf(cur.t); if (i >= 0) mine.seen.splice(i, 1); else { mine.seen.push(cur.t); const w = mine.want.indexOf(cur.t); if (w >= 0) mine.want.splice(w, 1); } saveMine(); paintAll(); paintMine(); }, { signal });
   wantList.addEventListener("click", (e) => { const b = e.target.closest("[data-rm]"); if (!b) return; mine.want = mine.want.filter((t) => t !== b.dataset.rm); saveMine(); paintMine(); }, { signal });
-  fetch("data/anime.json", { signal }).then((r) => r.json()).then((d) => {
-    list = d; const count = {}; d.forEach((a) => a.tags.forEach((t) => { count[t] = (count[t] || 0) + 1; }));
-    const tags = Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b, "ru")).slice(0, 18);
-    gTags.innerHTML = ["все", ...tags].map((t) => `<button type="button" class="px-chip${t === "все" ? " on" : ""}" data-g="${esc(t)}">${esc(t)}</button>`).join("");
-    paintAll(); paintMine();
-  }).catch(() => { gAll.textContent = "Не получилось загрузить список."; });
+  list = (Array.isArray(C.items) ? C.items : []).filter((x) => x && x.t).map((x) => ({ t: String(x.t), y: x.y || "", tags: (Array.isArray(x.tags) ? x.tags : String(x.tags || "").split(",")).map((t) => String(t).trim()).filter(Boolean), d: x.d || "" }));
+  ALL = L("tag_all", "все"); tag = ALL;
+  { const count = {}; list.forEach((x) => x.tags.forEach((t) => { count[t] = (count[t] || 0) + 1; }));
+    const tags = Object.keys(count).sort((p, q) => count[q] - count[p] || p.localeCompare(q, "ru")).slice(0, 18);
+    gTags.innerHTML = [ALL, ...tags].map((t) => `<button type="button" class="px-chip${t === ALL ? " on" : ""}" data-g="${esc(t)}">${esc(t)}</button>`).join("");
+    if (!list.length) gAll.textContent = L("load_error"); else paintAll(); }
   paintMine();
+  }
 });

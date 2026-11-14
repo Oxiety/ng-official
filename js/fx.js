@@ -6,6 +6,20 @@
 (() => {
   "use strict";
   const NL = window.NL;
+  /* Подстановка текстов из json в страницу.
+       data-tx="ключ"       -> текст элемента
+       data-tx-img="ключ"   -> src картинки;  data-tx-alt="ключ" -> её alt
+     Страница пока скрыта (.tx-wait), чтобы старый текст не мелькал; показываем после загрузки. */
+  NL.loadTx = async (file, root) => {
+    let data = {};
+    try { const r = await fetch(file, { cache: "no-cache" }); if (r.ok) data = await r.json(); } catch (_) {}
+    if (root) {
+      root.querySelectorAll("[data-tx]").forEach((n) => { const v = data[n.dataset.tx]; if (typeof v === "string") n.textContent = v; });
+      root.querySelectorAll("[data-tx-img]").forEach((n) => { const v = data[n.dataset.txImg]; if (typeof v === "string" && v.trim()) n.src = v; const a = data[n.dataset.txAlt]; if (typeof a === "string") n.alt = a; });
+      root.classList.remove("tx-wait"); root.classList.add("tx-ready");
+    }
+    return data;
+  };
   /* 1. Появление при прокрутке */
   NL.onPage(() => {
     const root = document.documentElement;
@@ -32,6 +46,6 @@
       w.coins += 1000; w.best = Math.max(w.best || 0, w.coins); localStorage.setItem("northling-wallet", JSON.stringify(w));
     } catch (_) {}
     document.documentElement.classList.add("konami"); setTimeout(() => document.documentElement.classList.remove("konami"), 2600);
-    if (NL.toast) NL.toast("Konami! +1000 монет в Интерактивчик");
+    if (NL.toast) NL.toast((NL.arcadeCfg && NL.arcadeCfg.m_konami) || "Konami! +1000 монет в Интерактивчик");
   });
 })();

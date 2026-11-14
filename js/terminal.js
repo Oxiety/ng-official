@@ -8,6 +8,10 @@
 NL.onPage(() => {
   "use strict";
   if (!document.querySelector("#termScreen")) return;
+  /* Тексты, файлы, предсказания и свои команды лежат в data/terminal.json (админка, вкладка «Терминал») */
+  NL.loadTx("data/terminal.json", document.querySelector("#termSection")).then((C) => { if (NL.signal.aborted) return; start(C); });
+  function start(C) {
+  const L = (k, d = "") => (typeof C[k] === "string" && C[k] !== "" ? C[k] : d);
   const $ = (s, r = document) => r.querySelector(s);
   const signal = NL.signal;
   const rnd = (n) => Math.floor(Math.random() * n);
@@ -19,20 +23,20 @@ NL.onPage(() => {
   const print = (text = "", cls = "") => { const d = document.createElement("div"); d.className = "tl " + cls; d.innerHTML = text === "" ? "&nbsp;" : text; out.append(d); screen.scrollTop = screen.scrollHeight; return d; };
   const lib = () => (NL.player && NL.player.library) || [];
   const PAGES = { home: "index.html", main: "index.html", arts: "arts.html", photos: "photos.html", oasis: "oasis.html", webdev: "webdev.html", interactive: "interactive.html", anime: "anime.html" };
-  const FILES = {
-    "about.txt": () => ["northling: личный сайт. арты, oasis, webdev, фотки и вот это всё.", "собрано руками и вайб-кодингом, версия " + (document.querySelector(".mono")?.textContent.match(/v[\d.]+/) || ["?"])[0] + "."],
-    "music.txt": () => { const l = []; lib().forEach((a) => a.albums.forEach((al) => l.push(a.name + " — " + al.title + " (" + al.tracks.length + ")"))); return l.length ? l : ["пока пусто"]; },
-    "secret.txt": () => ["молодец, что нашёл. подсказка: ↑ ↑ ↓ ↓ ← → ← → B A (нажми где угодно на сайте)"]
-  };
+  const ver = () => (document.querySelector(".mono")?.textContent.match(/v[\d.]+/) || ["?"])[0];
+  const subst = (s) => String(s).replace(/\{version\}/g, ver()).replace(/\{coins\}/g, readWallet().coins).replace(/\{theme\}/g, document.documentElement.dataset.theme || "dark");
+  const FILES = {};
+  (Array.isArray(C.files) ? C.files : []).forEach((f) => { if (f && f.name) FILES[f.name] = () => subst(f.content || "").split("\n"); });
+  FILES["music.txt"] = () => { const l = []; lib().forEach((a) => a.albums.forEach((al) => l.push(a.name + " — " + al.title + " (" + al.tracks.length + ")"))); return l.length ? l : ["пока пусто"]; };
   const go = (page) => { const a = document.createElement("a"); a.href = PAGES[page]; a.style.display = "none"; document.body.append(a); a.click(); a.remove(); };
   const need = (cond, msg) => { if (!cond) { print(msg, "err"); return false; } return true; };
 
   const COMMANDS = {
-    help: { d: "список команд", f: () => { print("Команды:"); Object.keys(COMMANDS).filter((k) => !COMMANDS[k].hide).sort().forEach((k) => print("  <b>" + k + "</b> — " + COMMANDS[k].d)); print("Tab дополняет, ↑/↓ листают историю.", "dim"); } },
-    about: { d: "что это за сайт", f: () => FILES["about.txt"]().forEach((t) => print(esc(t))) },
+    help: { d: "список команд", f: () => { print(esc(L("help_title", "Команды:"))); Object.keys(COMMANDS).filter((k) => !COMMANDS[k].hide).sort().forEach((k) => print("  <b>" + k + "</b> — " + COMMANDS[k].d)); print(esc(L("help_footer")), "dim"); } },
+    about: { d: "что это за сайт", f: () => (FILES["about.txt"] ? FILES["about.txt"]() : ["northling"]).forEach((t) => print(esc(t))) },
     ls: { d: "файлы", f: () => print(Object.keys(FILES).join("   ")) },
     cat: { d: "прочитать файл: cat about.txt", f: (a) => { const f = FILES[a[0]]; if (!f) return print("cat: " + esc(a[0] || "") + ": нет такого файла", "err"); f().forEach((t) => print(esc(t))); } },
-    whoami: { d: "кто ты", f: () => print("guest. но с хорошим вкусом.") },
+    whoami: { d: "кто ты", f: () => print(esc(L("whoami", "guest"))) },
     date: { d: "дата и время", f: () => print(new Date().toLocaleString("ru-RU")) },
     uptime: { d: "сколько ты тут сидишь", f: () => { const s = Math.floor((Date.now() - startedAt) / 1000); print("на этой странице: " + Math.floor(s / 60) + " мин " + (s % 60) + " сек"); } },
     echo: { d: "повторить текст", f: (a) => print(esc(a.join(" "))) },
@@ -51,17 +55,14 @@ NL.onPage(() => {
     roulette: { d: "к рулетке", f: () => { print("рулетка в Интерактивчике, лечу…"); setTimeout(() => go("interactive"), 300); } },
     coin: { d: "подбросить монетку", f: () => print(rnd(2) ? "орёл" : "решка") },
     roll: { d: "кубик: roll 20 (по умолчанию d6)", f: (a) => { const n = Math.max(2, Math.min(1000, parseInt(a[0]) || 6)); print("d" + n + ": <b>" + (1 + rnd(n)) + "</b>"); } },
-    fortune: { d: "предсказание", f: () => print(["Сегодня ты найдёшь классный трек.", "Не трогай прод в пятницу.", "Кто-то уже думает о тебе. Скорее всего, кот.", "Ctrl+S спасает жизни.", "Твоя удача сейчас на кулдауне, но недолго."][rnd(5)]) },
+    fortune: { d: "предсказание", f: () => { const f = Array.isArray(C.fortunes) && C.fortunes.length ? C.fortunes : ["..."]; print(esc(f[rnd(f.length)])); } },
     cowsay: { d: "корова говорит", f: (a) => { const t = esc(a.join(" ") || "муу"); const line = "-".repeat(t.length + 2); print("<pre> " + line + "\n< " + t + " >\n " + line + "\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||</pre>"); } },
     neofetch: { d: "инфа о системе", f: () => {
-      const ver = (document.querySelector(".mono")?.textContent.match(/v[\d.]+/) || ["?"])[0];
-      print("<pre class=\"nf\"><b>   ┌──┐</b>      guest@northling\n<b>   │ n│.</b>      ─────────────\n<b>   └──┘</b>      OS: Windows 11 (да, серьёзно)\n             Ядро: не Linux\n             Сайт: northling.space " + ver + "\n             Оболочка: nlsh 1.0 (понарошку)\n             Тема: " + (document.documentElement.dataset.theme || "dark") + "\n             Монет: " + readWallet().coins + "</pre>");
-      print("ВНИМАНИЕ: владелец этого сайта никогда в жизни не пользовался Linux и сидит на Windows 11. Все команды тут нарисованы, а не настоящие.", "err");
+      print("<pre class=\"nf\"><b>   ┌──┐</b>      guest@northling\n<b>   │ n│.</b>      ─────────────\n<b>   └──┘</b>      OS: " + esc(L("neofetch_os", "Windows 11")) + "\n             Ядро: " + esc(L("neofetch_kernel", "не Linux")) + "\n             Сайт: northling.space " + ver() + "\n             Оболочка: " + esc(L("neofetch_shell", "nlsh")) + "\n             Тема: " + (document.documentElement.dataset.theme || "dark") + "\n             Монет: " + readWallet().coins + "</pre>");
+      if (L("neofetch_warning")) print(esc(L("neofetch_warning")), "err");
     } },
-    uname: { d: "", hide: true, f: () => print("Windows_NT 11 northling x86_64. Не Linux, не надейся.") },
-    winver: { d: "", hide: true, f: () => print("Windows 11. Перезагрузка через 3… 2… (шутка)") },
     matrix: { d: "…", hide: true, f: () => runMatrix() },
-    sudo: { d: "", hide: true, f: () => print("sudo: на Windows такого нет, это просто красивое слово. Инцидент никому не отправлен, у сайта нет сервера.", "err") },
+    sudo: { d: "", hide: true, f: () => print(esc(L("sudo", "sudo: нет")), "err") },
     rm: { d: "", hide: true, f: (a) => { if (a.join(" ").includes("-rf")) { print("удаляю всё…", "err"); setTimeout(() => print("шутка. ничего не тронуто. но руку убери от клавиатуры."), 900); } else print("rm: что удалять?", "err"); } },
     exit: { d: "", hide: true, f: () => print("отсюда не выходят. ну ладно: goto main") }
   };
@@ -79,13 +80,17 @@ NL.onPage(() => {
   };
   NL.onCleanup(() => clearInterval(matrixTimer));
 
+  (Array.isArray(C.commands) ? C.commands : []).forEach((c) => {                // команды из админки
+    const n = String(c && c.name || "").trim().toLowerCase().split(/\s+/)[0];
+    if (n && !COMMANDS[n]) COMMANDS[n] = { d: String(c.description || ""), hide: !c.description, f: () => subst(c.output || "").split("\n").forEach((l) => print(esc(l))) };
+  });
   const run = (line) => {
     const clean = line.trim(); if (!clean) return;
-    print('<span class="pr">guest@northling:~$</span> ' + esc(clean), "cmd");
+    print('<span class="pr">' + esc(L("prompt", "guest@northling:~$")) + "</span> " + esc(clean), "cmd");
     hist2.push(clean); hpos = hist2.length;
     const [name, ...args] = clean.split(/\s+/);
     const c = COMMANDS[name.toLowerCase()];
-    if (c) c.f(args); else print("nlsh: " + esc(name) + ": команда не найдена. Попробуй <b>help</b>.", "err");
+    if (c) c.f(args); else print("nlsh: " + esc(name) + ": " + esc(L("unknown", "команда не найдена")), "err");
   };
   form.addEventListener("submit", (e) => { e.preventDefault(); const v = input.value; input.value = ""; run(v); }, { signal });
   input.addEventListener("keydown", (e) => {
@@ -98,6 +103,7 @@ NL.onPage(() => {
     }
   }, { signal });
   screen.addEventListener("click", () => { if (!getSelection().toString()) input.focus({ preventScroll: true }); }, { signal });
-  print("northling shell (nlsh) v1.0", "dim");
-  print("Напиши <b>help</b>, чтобы увидеть команды. Есть секреты.", "dim");
+  print(esc(L("welcome_1", "nlsh")), "dim");
+  print(esc(L("welcome_2", "Напиши help.")), "dim");
+  }
 });
