@@ -53,7 +53,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <span class="tray"><button class="theme-toggle settings-toggle" type="button" aria-label="Настройки" aria-haspopup="dialog" aria-expanded="false" title="Настройки"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button><span class="clock" id="clock" aria-hidden="true"></span></span>
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
 </div></header>
-<main id="arcade">
+<main id="arcade" class="tx-wait">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
 <linearGradient id="g-coin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0a0"/><stop offset=".55" stop-color="#ffc83d"/><stop offset="1" stop-color="#e08a10"/></linearGradient>
 <linearGradient id="g-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#f0a21a"/></linearGradient>
@@ -68,33 +68,33 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <symbol id="i-rocket" viewBox="0 0 48 48"><path d="M24 3c8 6 11 15 10 26H14C13 18 16 9 24 3z" fill="#f4f0ff" stroke="#5a2fd0" stroke-width="2" stroke-linejoin="round"/><circle cx="24" cy="18" r="4.4" fill="#7fe0ff" stroke="#5a2fd0" stroke-width="2"/><path d="M14 22 6 34l9-2zM34 22l8 12-9-2z" fill="#ff6fa8" stroke="#5a2fd0" stroke-width="2" stroke-linejoin="round"/><path d="M19 32l5 13 5-13z" fill="#ffb02e" stroke="#e8505f" stroke-width="2" stroke-linejoin="round"/></symbol>
 </defs></svg>
 <div class="fx" id="fx" aria-hidden="true"></div>
-<div class="jackpot-banner" id="jackpotBanner" aria-hidden="true"><b>ДЖЕКПОТ</b><span>ТЫ ЛЕГЕНДА</span></div>
+<div class="jackpot-banner" id="jackpotBanner" aria-hidden="true"><b data-tx="jackpot_title">ДЖЕКПОТ</b><span data-tx="jackpot_sub">ТЫ ЛЕГЕНДА</span></div>
 <section class="hero" style="padding-bottom:16px"><div class="wrap casino-hero">
-<span class="eyebrow pillish">интерактивчик</span>
+<span class="eyebrow pillish" data-tx="eyebrow">интерактивчик</span>
 <div class="bulbs" aria-hidden="true"></div>
-<h1 class="neon">Интерактив<span>чик</span></h1>
-<p class="lead">Казино для тех, у кого нет денег. Здесь всё ненастоящее: монеты, выигрыши, крупье и твоя уверенность, что «щас отыграюсь».</p>
+<h1 class="neon"><span data-tx="title">Интерактив</span><span class="acc" data-tx="title_accent">чик</span></h1>
+<p class="lead" data-tx="intro">Казино для тех, у кого нет денег. Здесь всё ненастоящее: монеты, выигрыши, крупье и твоя уверенность, что «щас отыграюсь».</p>
 <div class="ticker" id="ticker" aria-label="Лента выигрышей (все выдуманы)"></div>
 <div class="bank-grid">
-<div class="wallet" aria-label="Кошелёк"><svg class="coin big" aria-hidden="true"><use href="#i-coin"/></svg><b id="coins">1000</b><small>рекорд <span id="st-best">1000</span></small></div>
-<div class="rank"><span class="rank-t">Градус лудомании</span><b id="rankName">Турист</b><div class="meter"><i id="rankFill"></i></div><small id="rankNext"></small></div>
-<div class="stats"><span>Спинов<b id="st-spins">0</b></span><span>Поставлено<b id="st-wagered">0</b></span><span>Выиграно<b id="st-won">0</b></span><span>Рекордный выигрыш<b id="st-big">0</b></span></div>
-<div class="bank"><span class="rank-t">Банк «Последняя надежда»</span><small id="bankNote"></small><span class="debt-row">Долг: <b id="debt">0</b></span>
-<div class="arc-row"><button class="btn sm primary" id="loan" type="button">Займ 500 (вернуть 750)</button><button class="btn sm" id="repay" type="button">Погасить</button><button class="btn sm" id="dole" type="button" hidden>Пособие +500</button></div></div>
+<div class="wallet" aria-label="Кошелёк"><svg class="coin big" aria-hidden="true"><use href="#i-coin"/></svg><b id="coins">1000</b><small><span data-tx="best_label">рекорд</span> <span id="st-best">1000</span></small></div>
+<div class="rank"><span class="rank-t" data-tx="rank_label">Градус лудомании</span><b id="rankName">Турист</b><div class="meter"><i id="rankFill"></i></div><small id="rankNext"></small></div>
+<div class="stats"><span><i data-tx="stat_spins">Спинов</i><b id="st-spins">0</b></span><span><i data-tx="stat_wagered">Поставлено</i><b id="st-wagered">0</b></span><span><i data-tx="stat_won">Выиграно</i><b id="st-won">0</b></span><span><i data-tx="stat_big">Рекордный выигрыш</i><b id="st-big">0</b></span></div>
+<div class="bank"><span class="rank-t" data-tx="bank_title">Банк «Последняя надежда»</span><small id="bankNote"></small><span class="debt-row"><span data-tx="debt_label">Долг:</span> <b id="debt">0</b></span>
+<div class="arc-row"><button class="btn sm primary" id="loan" type="button">Займ 500 (вернуть 750)</button><button class="btn sm" id="repay" type="button" data-tx="btn_repay">Погасить</button><button class="btn sm" id="dole" type="button" hidden>Пособие +500</button></div></div>
 </div>
-<div class="arc-row hero-foot"><label class="adtoggle"><input type="checkbox" id="adsToggle"> Показывать рекламу (рекомендуем, это весело)</label><button class="btn sm ghost" id="walletReset" type="button">Сбросить всё</button></div>
-<p class="muted small" style="margin:10px 0 0">Настоящих денег тут нет и не будет. Монеты лежат только в твоём браузере. Ничего из этого не совет и не призыв, это шутка. В жизни казино лучше обходить стороной.</p>
+<div class="arc-row hero-foot"><label class="adtoggle"><input type="checkbox" id="adsToggle"> <span data-tx="ads_label">Показывать рекламу (рекомендуем, это весело)</span></label><button class="btn sm ghost" id="walletReset" type="button" data-tx="btn_reset">Сбросить всё</button></div>
+<p class="muted small" style="margin:10px 0 0" data-tx="disclaimer">Настоящих денег тут нет и не будет. Монеты лежат только в твоём браузере. Ничего из этого не совет и не призыв, это шутка. В жизни казино лучше обходить стороной.</p>
 </div></section>
 <div class="arc-grid">
-<section class="win arc-win a-slots" id="slotsWin"><span class="eyebrow">slots.exe</span>
+<section class="win arc-win a-slots" id="slotsWin"><span class="eyebrow" data-tx="slots_bar">slots.exe</span>
 <div id="slots" class="slots">
 <div class="reels"><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div><div class="reel"><div class="strip"></div></div></div>
 <p id="slotMsg" class="arc-msg" aria-live="polite">Выбери ставку и крути. Что может пойти не так?</p>
-<div class="arc-row"><div class="bets" data-bet-group="slots" aria-label="Ставка"><button type="button" data-v="10">10</button><button type="button" data-v="50">50</button><button type="button" data-v="100">100</button><button type="button" data-v="max">MAX</button></div>
-<button class="btn primary" id="slotSpin" type="button">Крутить</button></div>
-<details class="paytable"><summary>Таблица выплат</summary><p class="pays"><span><svg viewBox="0 0 48 48"><use href="#s-cherry"/></svg>x5</span><span><svg viewBox="0 0 48 48"><use href="#s-lemon"/></svg>x8</span><span><svg viewBox="0 0 48 48"><use href="#s-bell"/></svg>x12</span><span><svg viewBox="0 0 48 48"><use href="#s-star"/></svg>x20</span><span><svg viewBox="0 0 48 48"><use href="#s-diamond"/></svg>x50</span><span><svg viewBox="0 0 48 48"><use href="#s-seven"/></svg>x100</span></p><p>Три одинаковых платят по таблице. Пара вишен x2, любая другая пара возвращает ставку.</p></details>
+<div class="arc-row"><div class="bets" data-bet-group="slots" aria-label="Ставка"></div>
+<button class="btn primary" id="slotSpin" type="button" data-tx="btn_spin">Крутить</button></div>
+<details class="paytable"><summary data-tx="paytable_title">Таблица выплат</summary><p class="pays"><span><svg viewBox="0 0 48 48"><use href="#s-cherry"/></svg>x5</span><span><svg viewBox="0 0 48 48"><use href="#s-lemon"/></svg>x8</span><span><svg viewBox="0 0 48 48"><use href="#s-bell"/></svg>x12</span><span><svg viewBox="0 0 48 48"><use href="#s-star"/></svg>x20</span><span><svg viewBox="0 0 48 48"><use href="#s-diamond"/></svg>x50</span><span><svg viewBox="0 0 48 48"><use href="#s-seven"/></svg>x100</span></p><p data-tx="paytable_note">Три одинаковых платят по таблице. Пара вишен платит по своему множителю, любая другая пара возвращает ставку.</p></details>
 </div></section>
-<section class="win arc-win a-rou" id="rouWin"><span class="eyebrow">roulette.exe</span>
+<section class="win arc-win a-rou" id="rouWin"><span class="eyebrow" data-tx="rou_bar">roulette.exe</span>
 <div class="rou">
 <div class="wheel-stage"><div class="wheel-ptr" aria-hidden="true"></div><div class="wheel-rot"><canvas id="wheel" width="280" height="280" aria-label="Колесо рулетки"></canvas></div><div class="ball-ring" aria-hidden="true"><i class="ball"></i></div></div>
 <div class="rou-side">
@@ -103,27 +103,27 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <div class="choices" id="rouChoices"><button type="button" data-k="red" class="red">Красное</button><button type="button" data-k="black" class="black">Чёрное</button><button type="button" data-k="even">Чёт</button><button type="button" data-k="odd">Нечёт</button><button type="button" data-k="low">1–18</button><button type="button" data-k="high">19–36</button><button type="button" data-k="d1">1-я дюжина</button><button type="button" data-k="d2">2-я дюжина</button><button type="button" data-k="d3">3-я дюжина</button></div>
 </div></div>
 <div class="numgrid" id="numGrid" aria-label="Ставка на число"></div>
-<p class="arc-pick">Ставка: <b id="rouPick"></b></p>
-<div class="arc-row"><div class="bets" data-bet-group="roulette" aria-label="Размер ставки"><button type="button" data-v="10">10</button><button type="button" data-v="50">50</button><button type="button" data-v="100">100</button><button type="button" data-v="max">MAX</button></div>
-<button class="btn primary" id="rouSpin" type="button">Крутить</button></div>
+<p class="arc-pick"><span data-tx="rou_pick_label">Ставка:</span> <b id="rouPick"></b></p>
+<div class="arc-row"><div class="bets" data-bet-group="roulette" aria-label="Размер ставки"></div>
+<button class="btn primary" id="rouSpin" type="button" data-tx="btn_spin">Крутить</button></div>
 </section>
-<section class="win arc-win a-crash" id="crashWin"><span class="eyebrow">rocket.exe</span>
+<section class="win arc-win a-crash" id="crashWin"><span class="eyebrow" data-tx="crash_bar">rocket.exe</span>
 <div class="crash-box" id="crashBox"><div class="crash-sky" aria-hidden="true"></div><svg class="rocket" id="rocket" viewBox="0 0 48 48" aria-hidden="true"><use href="#i-rocket"/></svg><div class="crash-num" id="crashNum" aria-live="polite">x1.00</div></div>
 <p class="arc-msg" id="crashMsg">Ракета летит всё выше. Взорвётся в случайный момент. Успей забрать.</p>
 <div class="hist" id="crashHist" aria-label="Прошлые взрывы"></div>
-<div class="arc-row"><div class="bets" data-bet-group="crash" aria-label="Ставка"><button type="button" data-v="10">10</button><button type="button" data-v="50">50</button><button type="button" data-v="100">100</button><button type="button" data-v="max">MAX</button></div>
+<div class="arc-row"><div class="bets" data-bet-group="crash" aria-label="Ставка"></div>
 <button class="btn primary" id="crashGo" type="button">Взлетаем</button></div>
 </section>
-<section class="win arc-win a-scratch" id="scWin"><span class="eyebrow">scratch.exe</span>
+<section class="win arc-win a-scratch" id="scWin"><span class="eyebrow" data-tx="scratch_bar">scratch.exe</span>
 <div class="sc-box"><canvas id="scUnder" aria-hidden="true"></canvas><canvas id="scFoil" aria-label="Скретч-карта: води мышкой или пальцем, чтобы стереть"></canvas></div>
 <p class="arc-msg" id="scMsg" aria-live="polite">Билет 50 монет. Три одинаковых числа выигрывают.</p>
-<div class="arc-row"><button class="btn sm ghost" id="scAll" type="button">Стереть всё</button><button class="btn primary" id="scBuy" type="button">Купить билет (50)</button></div>
+<div class="arc-row"><button class="btn sm ghost" id="scAll" type="button" data-tx="btn_scratch_all">Стереть всё</button><button class="btn primary" id="scBuy" type="button">Купить билет (50)</button></div>
 </section>
 </div>
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.4</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.4.1</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
 <script src="js/core.js"></script>

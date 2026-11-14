@@ -1416,7 +1416,7 @@ html.konami{animation:konami 2.4s ease}
 .bulbs{height:14px;margin:6px 0 4px;background:radial-gradient(circle,#ffe36a 0 3px,transparent 4px) 0 0/22px 14px repeat-x;animation:bulbs 1s steps(1) infinite;filter:drop-shadow(0 0 5px #ffd24a)}
 @keyframes bulbs{50%{background-position:11px 0;opacity:.75}}
 .neon{font:800 clamp(38px,8vw,84px)/1 var(--display,var(--body));letter-spacing:-.03em;margin:10px 0 14px;color:#fff;text-shadow:0 0 6px #fff,0 0 18px var(--pink),0 0 38px var(--pink),0 0 70px #b86cff;animation:neon 3.4s infinite}
-.neon span{color:var(--pink)}
+.neon .acc{color:var(--pink)}
 @keyframes neon{0%,18%,22%,62%,64%,100%{opacity:1}20%,63%{opacity:.55}}
 .ticker{overflow:hidden;white-space:nowrap;margin:6px -4px 20px;padding:8px 0;border-block:1px solid var(--line2);background:rgba(0,0,0,.28);display:flex}
 .ticker .tk{display:flex;flex:none;gap:46px;padding-right:46px;animation:tick 70s linear infinite;font:700 13px var(--body);color:var(--soft)}
@@ -1560,3 +1560,9 @@ html.no-anim .bulbs,html.no-anim .neon,html.no-anim .ticker .tk{animation:none}
 .g-all::-webkit-scrollbar{width:12px}.g-all::-webkit-scrollbar-track{background:#12093a}.g-all::-webkit-scrollbar-thumb{background:var(--p-pink);border:3px solid #12093a}
 @media(prefers-reduced-motion:reduce){.q-jp:after,.g-card.pop{animation:none}}
 html.no-anim .q-jp:after,html.no-anim .g-card.pop{animation:none}
+
+/* 2.4.1: страница скрыта, пока не подставились тексты из json (js/fx.js, NL.loadTx) */
+#arcade,#anime{transition:opacity .25s}
+.tx-wait{opacity:0;animation:txshow .01s 2.5s forwards}
+@keyframes txshow{to{opacity:1}}
+.stats i{font-style:normal}

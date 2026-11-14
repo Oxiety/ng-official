@@ -54,49 +54,49 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <span class="tray"><button class="theme-toggle settings-toggle" type="button" aria-label="Настройки" aria-haspopup="dialog" aria-expanded="false" title="Настройки"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button><span class="clock" id="clock" aria-hidden="true"></span></span>
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
 </div></header>
-<main id="anime">
+<main id="anime" class="tx-wait">
 <section class="px-hero">
 <canvas id="pxScene" class="px-canvas" aria-hidden="true"></canvas>
 <div class="px-hero-text">
-<span class="px-tag">ANIME CORNER</span>
-<h1 class="px-title"><span lang="ja">アニメ</span><small>уголок</small></h1>
-<p class="px-sub" lang="ja">夜の町、遠くの電車。</p>
-<p class="px-sub-ru">Ночной город и далёкий поезд. Присаживайся.</p>
+<span class="px-tag" data-tx="tag">ANIME CORNER</span>
+<h1 class="px-title"><span lang="ja" data-tx="title_jp">アニメ</span><small data-tx="title_ru">уголок</small></h1>
+<p class="px-sub" lang="ja" data-tx="sub_jp">夜の町、遠くの電車。</p>
+<p class="px-sub-ru" data-tx="sub_ru">Ночной город и далёкий поезд. Присаживайся.</p>
 </div>
 </section>
 <div class="px-grid">
-<section class="px-win px-quote"><div class="px-bar"><span lang="ja">名言</span><span>quotes.txt</span></div>
+<section class="px-win px-quote"><div class="px-bar"><span lang="ja" data-tx="quotes_bar_jp">名言</span><span data-tx="quotes_bar">quotes.txt</span></div>
 <div class="px-in">
 <p class="q-jp" id="qJp" lang="ja" aria-live="polite"></p>
 <p class="q-ru" id="qRu"></p>
 <p class="q-src" id="qSrc"></p>
-<div class="px-row"><button class="px-btn" id="qPrev" type="button">&lt; назад</button><button class="px-btn" id="qNext" type="button">дальше &gt;</button></div>
-<p class="px-note">Цитаты по памяти, переводы вольные.</p>
+<div class="px-row"><button class="px-btn" id="qPrev" type="button" data-tx="btn_prev">&lt; назад</button><button class="px-btn" id="qNext" type="button" data-tx="btn_next">дальше &gt;</button></div>
+<p class="px-note" data-tx="quote_note">Цитаты по памяти, переводы вольные.</p>
 </div></section>
-<figure class="px-win px-frame"><div class="px-bar"><span lang="ja">思い出</span><span>frame.png</span></div>
-<div class="px-in"><img src="img/anime/room.jpg" alt="Тёмная комната с обоями, арка и девушка-аниме за столом с тарелкой" width="1276" height="715" decoding="async" loading="lazy"><figcaption>кадр, который запомнился</figcaption></div></figure>
-<section class="px-win px-weather"><div class="px-bar"><span lang="ja">天気</span><span>weather.exe</span></div>
+<figure class="px-win px-frame"><div class="px-bar"><span lang="ja" data-tx="frame_bar_jp">思い出</span><span data-tx="frame_bar">frame.png</span></div>
+<div class="px-in"><img data-tx-img="frame_image" data-tx-alt="frame_alt" src="img/anime/room.jpg" alt="Тёмная комната с обоями, арка и девушка-аниме за столом с тарелкой" width="1276" height="715" decoding="async" loading="lazy"><figcaption data-tx="frame_caption">кадр, который запомнился</figcaption></div></figure>
+<section class="px-win px-weather"><div class="px-bar"><span lang="ja" data-tx="weather_bar_jp">天気</span><span data-tx="weather_bar">weather.exe</span></div>
 <div class="px-in"><canvas id="scene" aria-label="Пиксельная сцена с погодой"></canvas>
-<div class="px-row" id="sceneModes"><button class="px-btn on" type="button" data-m="sakura">сакура</button><button class="px-btn" type="button" data-m="rain">дождь</button><button class="px-btn" type="button" data-m="fireflies">светлячки</button><button class="px-btn" type="button" data-m="snow">снег</button></div>
-<p class="px-note">Води курсором: ветер и светлячки откликаются.</p></div></section>
-<section class="px-win px-gacha"><div class="px-bar"><span lang="ja">何を見る？</span><span>gacha.exe</span></div>
+<div class="px-row" id="sceneModes"><button class="px-btn on" type="button" data-m="sakura" data-tx="mode_sakura">сакура</button><button class="px-btn" type="button" data-m="rain" data-tx="mode_rain">дождь</button><button class="px-btn" type="button" data-m="fireflies" data-tx="mode_fireflies">светлячки</button><button class="px-btn" type="button" data-m="snow" data-tx="mode_snow">снег</button></div>
+<p class="px-note" data-tx="weather_note">Води курсором: ветер и светлячки откликаются.</p></div></section>
+<section class="px-win px-gacha"><div class="px-bar"><span lang="ja" data-tx="gacha_bar_jp">何を見る？</span><span data-tx="gacha_bar">gacha.exe</span></div>
 <div class="px-in gacha-in">
 <div class="g-left">
-<p class="px-h">Что посмотреть?</p>
+<p class="px-h" data-tx="gacha_title">Что посмотреть?</p>
 <div class="px-chips" id="gTags" aria-label="Жанры"></div>
-<label class="px-check"><input type="checkbox" id="gSkipSeen" checked> не повторять уже просмотренное</label>
-<button class="px-btn big" id="gRoll" type="button">крутануть</button>
-<div class="g-card" id="gCard"><small>нажми кнопку</small><b>?</b><span></span><p>Случайный тайтл из подборки. Можно сузить жанром.</p></div>
+<label class="px-check"><input type="checkbox" id="gSkipSeen" checked> <span data-tx="gacha_skip">не повторять уже просмотренное</span></label>
+<button class="px-btn big" id="gRoll" type="button" data-tx="btn_roll">крутануть</button>
+<div class="g-card" id="gCard"><small data-tx="card_hint">нажми кнопку</small><b>?</b><span></span><p data-tx="card_text">Случайный тайтл из подборки. Можно сузить жанром.</p></div>
 <div class="px-row"><button class="px-btn" id="gWant" type="button" disabled>хочу</button><button class="px-btn" id="gSeen" type="button" disabled>смотрел</button></div>
-<p class="px-h sm">Хочу посмотреть <span id="wantN">0</span></p><div class="px-chips mini" id="gWantList"></div>
+<p class="px-h sm"><span data-tx="want_title">Хочу посмотреть</span> <span id="wantN">0</span></p><div class="px-chips mini" id="gWantList"></div>
 </div>
-<div class="g-right"><p class="px-h sm">Все тайтлы <span id="allN"></span></p><div class="g-all" id="gAll" role="list"></div></div>
+<div class="g-right"><p class="px-h sm"><span data-tx="all_title">Все тайтлы</span> <span id="allN"></span></p><div class="g-all" id="gAll" role="list"></div></div>
 </div></section>
 </div>
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.4</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.4.1</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
 <script src="js/core.js"></script>

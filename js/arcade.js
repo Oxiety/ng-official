@@ -9,7 +9,15 @@
    ===================================================================== */
 NL.onPage(() => {
   "use strict";
-  if (!document.querySelector("#arcade")) return;
+  const rootEl = document.querySelector("#arcade");
+  if (!rootEl) return;
+  /* Все тексты и числа лежат в data/arcade.json (правятся в админке, вкладка «Интерактивчик») */
+  NL.loadTx("data/arcade.json", rootEl).then((C) => { if (NL.signal.aborted) return; NL.arcadeCfg = C; start(C); });
+  function start(C) {
+  const num = (k, d) => { const v = parseFloat(C[k]); return Number.isFinite(v) ? v : d; };
+  const list = (k) => Array.isArray(C[k]) ? C[k] : [];
+  const T = (k, v = {}) => String(C[k] ?? "").replace(/\{(\w+)\}/g, (m, n) => (n in v ? v[n] : m));
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const signal = NL.signal;
@@ -22,15 +30,13 @@ NL.onPage(() => {
   NL.onCleanup(() => { timers.forEach(clearTimeout); timers.clear(); });
 
   /* ===== 1. Кошелёк и статистика ===== */
-  const START = 1000;
+  const START = num("start_coins", 1000);
   const fresh = () => ({ coins: START, best: START, spins: 0, wagered: 0, won: 0, big: 0, debt: 0 });
   let wallet = fresh();
   try { const w = JSON.parse(localStorage.getItem("northling-wallet")); if (w && Number.isFinite(w.coins)) wallet = Object.assign(fresh(), w); } catch (_) {}
   const save = () => { try { localStorage.setItem("northling-wallet", JSON.stringify(wallet)); } catch (_) {} };
-  const RANKS = [
-    [0, "Турист"], [8, "Зашёл на минутку"], [25, "Ещё один спин"], [60, "Системный игрок"], [120, "Я знаю, как это работает"],
-    [250, "Лудоман со стажем"], [500, "Легенда зала"], [900, "Жена ушла, зато джекпот рядом"], [1500, "Почётный житель казино"]
-  ];
+  const RANKS = list("ranks").map((r) => [parseFloat(r.spins) || 0, String(r.name || "")]).sort((x, y) => x[0] - y[0]);
+  if (!RANKS.length) RANKS.push([0, "Турист"]);
   const rankOf = (n) => { let r = RANKS[0], next = null; for (let i = 0; i < RANKS.length; i++) if (n >= RANKS[i][0]) { r = RANKS[i]; next = RANKS[i + 1] || null; } return { name: r[1], from: r[0], next }; };
   const paint = () => {
     $("#coins").textContent = fmt(wallet.coins);
@@ -41,29 +47,35 @@ NL.onPage(() => {
     $("#rankName").textContent = r.name;
     const pct = r.next ? (wallet.spins - r.from) / (r.next[0] - r.from) : 1;
     $("#rankFill").style.width = Math.round(Math.min(1, pct) * 100) + "%";
-    $("#rankNext").textContent = r.next ? "до «" + r.next[1] + "»: " + (r.next[0] - wallet.spins) + " спинов" : "Максимум. Дальше только солнце.";
+    $("#rankNext").textContent = r.next ? T("m_rank_next", { name: r.next[1], n: r.next[0] - wallet.spins }) : T("m_rank_max");
     $("#debt").textContent = fmt(wallet.debt);
-    $("#loan").disabled = wallet.debt > 3000; $("#repay").disabled = !wallet.debt || !wallet.coins;
+    $("#loan").disabled = wallet.debt > num("loan_limit", 3000); $("#repay").disabled = !wallet.debt || !wallet.coins;
     $("#dole").hidden = wallet.coins >= 10;
-    $("#bankNote").textContent = wallet.debt ? "Долг растёт. Банк тобой гордится." : "Ты чист перед банком. Пока.";
+    $("#bankNote").textContent = wallet.debt ? T("m_bank_debt") : T("m_bank_clean");
   };
   const add = (d) => { wallet.coins = Math.max(0, wallet.coins + d); wallet.best = Math.max(wallet.best, wallet.coins); save(); paint(); };
   const record = (bet, win) => { wallet.spins++; wallet.wagered += bet; wallet.won += win; wallet.big = Math.max(wallet.big, win); save(); paint(); };
   $("#walletReset").addEventListener("click", () => { if (!confirm("Обнулить кошелёк и всю статистику?")) return; wallet = fresh(); save(); paint(); }, { signal });
-  $("#dole").addEventListener("click", () => add(500), { signal });
-  $("#loan").addEventListener("click", () => { wallet.debt += 750; add(500); toast("Займ одобрен за 0,4 секунды. Долг: " + fmt(wallet.debt)); }, { signal });
-  $("#repay").addEventListener("click", () => { const p = Math.min(wallet.coins, wallet.debt); wallet.debt -= p; add(-p); toast("Погашено " + fmt(p) + ". Банк плачет от счастья."); }, { signal });
+  $("#dole").addEventListener("click", () => add(num("dole", 500)), { signal });
+  $("#loan").addEventListener("click", () => { wallet.debt += num("loan_owe", 750); add(num("loan_get", 500)); toast(T("m_loan", { debt: fmt(wallet.debt) })); }, { signal });
+  $("#repay").addEventListener("click", () => { const p = Math.min(wallet.coins, wallet.debt); wallet.debt -= p; add(-p); toast(T("m_repay", { n: fmt(p) })); }, { signal });
   const toast = (t) => NL.toast && NL.toast(t);
+  $("#loan").textContent = T("btn_loan", { get: num("loan_get", 500), owe: num("loan_owe", 750) });
+  $("#dole").textContent = T("btn_dole", { n: num("dole", 500) });
+  $(".jackpot-banner").setAttribute("aria-hidden", "true");
 
   /* Ставки: у каждой игры свои кнопки (data-bet-group) */
-  const bets = { slots: 10, roulette: 10, crash: 10 };
+  const betOpts = String(C.bet_options || "10|50|100|MAX").split("|").map((x) => x.trim()).filter(Boolean);
+  const firstBet = betOpts.map((x) => parseFloat(x)).find((x) => x > 0) || 10;
+  const bets = { slots: firstBet, roulette: firstBet, crash: firstBet };
   $$("[data-bet-group]").forEach((group) => {
     const key = group.dataset.betGroup;
+    group.innerHTML = betOpts.map((v) => /^max$/i.test(v) ? `<button type="button" data-v="max">${esc(v)}</button>` : `<button type="button" data-v="${parseFloat(v) || 0}">${esc(v)}</button>`).join("");
     const mark = () => $$("button", group).forEach((b) => b.classList.toggle("on", b.dataset.v === String(bets[key])));
     group.addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; bets[key] = b.dataset.v === "max" ? "max" : +b.dataset.v; mark(); }, { signal });
     mark();
   });
-  const betOf = (k) => bets[k] === "max" ? Math.min(wallet.coins, 500) : bets[k];
+  const betOf = (k) => bets[k] === "max" ? Math.min(wallet.coins, num("max_bet", 500)) : bets[k];
 
   /* ===== 2. Эффекты: дождь из монет, тряска ===== */
   const fx = $("#fx");
@@ -78,22 +90,22 @@ NL.onPage(() => {
   const shake = (el) => { if (calm()) return; el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); };
 
   /* ===== 3. Слоты ===== */
-  const SYM = [
-    { id: "cherry", w: 30, m: 5 }, { id: "lemon", w: 26, m: 8 }, { id: "bell", w: 20, m: 12 },
-    { id: "star", w: 14, m: 20 }, { id: "diamond", w: 7, m: 50 }, { id: "seven", w: 3, m: 100 }
-  ];
+  const SYMS = ["cherry", "lemon", "bell", "star", "diamond", "seven"];
+  let SYM = list("slot_symbols").filter((x) => SYMS.includes(x.id)).map((x) => ({ id: x.id, w: Math.max(0, parseFloat(x.weight) || 0), m: parseFloat(x.mult) || 0 })).filter((x) => x.w > 0);
+  if (!SYM.length) SYM = [{ id: "cherry", w: 1, m: 5 }];
+  $(".pays").innerHTML = SYM.map((x) => `<span><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#s-${x.id}"/></svg>x${x.m}</span>`).join("");
   const TW = SYM.reduce((a, x) => a + x.w, 0);
   const pick = () => { let r = rnd(TW); for (const x of SYM) if ((r -= x.w) < 0) return x; return SYM[0]; };
   const cellHtml = (x) => `<i><svg viewBox="0 0 48 48" aria-hidden="true"><use href="#s-${x.id}"/></svg></i>`;
   const strips = $$("#slots .strip"), slotMsg = $("#slotMsg"), slotBtn = $("#slotSpin"), REEL_H = 84;
   const setStrip = (s, x) => { s.style.transition = "none"; s.style.transform = "translateY(0)"; s.innerHTML = cellHtml(x); };
-  strips.forEach((s) => setStrip(s, pick()));
+  strips.forEach((s) => setStrip(s, pick())); slotMsg.textContent = T("m_slot_idle");
   let spinning = false;
   const spin = async () => {
     if (spinning) return;
     const bet = betOf("slots");
-    if (!bet || wallet.coins < bet) { slotMsg.textContent = "Монет нет. Возьми займ или пособие, ты же этого хочешь."; return; }
-    spinning = true; slotBtn.disabled = true; slotMsg.textContent = "Крутим, молимся…";
+    if (!bet || wallet.coins < bet) { slotMsg.textContent = T("m_slot_nocoins"); return; }
+    spinning = true; slotBtn.disabled = true; slotMsg.textContent = T("m_slot_spin");
     $("#slots").classList.remove("win", "jackpot"); add(-bet);
     const res = strips.map(pick), quick = calm();
     await Promise.all(strips.map((s, i) => new Promise((done) => {
@@ -104,11 +116,11 @@ NL.onPage(() => {
       s.style.transition = `transform ${t}s cubic-bezier(.2,.8,.2,1)`; s.style.transform = `translateY(${-n * REEL_H}px)`;
       later(() => { setStrip(s, res[i]); done(); }, t * 1000 + 40);
     })));
-    const [a, b, c] = res; let win = 0, text = "Мимо. Но вот следующий точно зайдёт.";
-    if (a === b && b === c) { win = bet * a.m; text = "ТРИ В РЯД! +" + fmt(win) + " монет"; }
-    else if (a === b || b === c || a === c) { const p = a === b || a === c ? a : b; win = p.id === "cherry" ? bet * 2 : bet; text = win > bet ? "Пара вишен: +" + fmt(win - bet) : "Пара: ставка вернулась. Скучно, давай ещё."; }
+    const [a, b, c] = res; let win = 0, text = T("m_slot_lose");
+    if (a === b && b === c) { win = bet * a.m; text = T("m_slot_triple", { n: fmt(win) }); }
+    else if (a === b || b === c || a === c) { const p = a === b || a === c ? a : b; win = Math.round(bet * (p.id === "cherry" ? num("slot_pair_cherry_mult", 2) : num("slot_pair_mult", 1))); text = win > bet ? T("m_slot_pair_win", { n: fmt(win - bet) }) : T("m_slot_pair_back"); }
     if (win) add(win); record(bet, win);
-    if (win > bet) { const big = win >= bet * 50; $("#slots").classList.add(big ? "jackpot" : "win"); burst(big ? 60 : 22); shake($("#slotsWin")); if (big) $("#jackpotBanner").classList.add("show"), later(() => $("#jackpotBanner").classList.remove("show"), 2600); }
+    if (win > bet) { const big = win >= bet * Math.max(...SYM.map((x) => x.m)) * 0.5; $("#slots").classList.add(big ? "jackpot" : "win"); burst(big ? 60 : 22); shake($("#slotsWin")); if (big) $("#jackpotBanner").classList.add("show"), later(() => $("#jackpotBanner").classList.remove("show"), 2600); }
     slotMsg.textContent = text; spinning = false; slotBtn.disabled = false;
   };
   slotBtn.addEventListener("click", spin, { signal });
@@ -146,11 +158,11 @@ NL.onPage(() => {
   $("#rouChoices").addEventListener("click", (e) => { const b = e.target.closest("button"); if (b) { choice = b.dataset.k; markChoice(); } }, { signal });
   grid.addEventListener("click", (e) => { const b = e.target.closest(".num"); if (b) { choice = "n" + b.dataset.n; markChoice(); } }, { signal });
   markChoice();
-  let wheelRot = 0, ballRot = 0, rouBusy = false;
+  let wheelRot = 0, ballRot = 0, rouBusy = false; rouMsg.textContent = T("m_rou_idle");
   const spinRoulette = () => {
     if (rouBusy) return; const bet = betOf("roulette");
-    if (!bet || wallet.coins < bet) { rouMsg.textContent = "Монет нет. Банк уже ждёт тебя."; return; }
-    rouBusy = true; rouBtn.disabled = true; rouMsg.textContent = "Шарик летит…"; add(-bet);
+    if (!bet || wallet.coins < bet) { rouMsg.textContent = T("m_rou_nocoins"); return; }
+    rouBusy = true; rouBtn.disabled = true; rouMsg.textContent = T("m_rou_spin"); add(-bet);
     const k = rnd(37), number = ORDER[k], dur = calm() ? 0 : 4.6, want = (360 - k * STEP) % 360, cur = ((wheelRot % 360) + 360) % 360;
     wheelRot += (want - cur + 360) % 360 + 360 * 5; ballRot -= 360 * 7 + (((ballRot % 360) + 360) % 360 ? 360 - (((ballRot % 360) + 360) % 360) : 0);
     wheelBox.style.transition = `transform ${dur}s cubic-bezier(.12,.62,.12,1)`; wheelBox.style.transform = `rotate(${wheelRot}deg)`;
@@ -158,7 +170,7 @@ NL.onPage(() => {
     later(() => {
       const mult = choice.startsWith("n") ? (+choice.slice(1) === number ? 36 : 0) : (BETS[choice][1](number) ? BETS[choice][2] : 0);
       if (mult) add(bet * mult); record(bet, bet * mult);
-      rouMsg.textContent = "Выпало " + number + " (" + { green: "зеро", red: "красное", black: "чёрное" }[colorOf(number)] + "). " + (mult ? "Выигрыш: +" + fmt(bet * mult - bet) : "Не повезло. Бывает. Ставь снова.");
+      rouMsg.textContent = T("m_rou_result", { n: number, color: { green: "зеро", red: "красное", black: "чёрное" }[colorOf(number)], res: mult ? T("m_rou_win", { n: fmt(bet * mult - bet) }) : T("m_rou_lose") });
       if (mult > 1) { burst(mult >= 36 ? 60 : 20); shake($("#rouWin")); }
       const chip = document.createElement("span"); chip.className = "num " + colorOf(number); chip.textContent = number; hist.prepend(chip); while (hist.children.length > 12) hist.lastChild.remove();
       rouBusy = false; rouBtn.disabled = false;
@@ -173,22 +185,22 @@ NL.onPage(() => {
   NL.onCleanup(stopCrash);
   const endCrash = (cashed) => {
     stopCrash(); const c = crash; crash = null;
-    crashBtn.textContent = "Взлетаем"; crashBtn.classList.add("primary"); crashBtn.classList.remove("hot");
+    crashBtn.textContent = T("btn_crash_start"); crashBtn.classList.add("primary"); crashBtn.classList.remove("hot");
     const chip = document.createElement("span"); chip.className = "num " + (c.point >= 2 ? "green" : "red"); chip.textContent = c.point.toFixed(2) + "x"; crashHist.prepend(chip); while (crashHist.children.length > 10) crashHist.lastChild.remove();
     if (cashed) return;
     crashBox.classList.add("boom"); later(() => crashBox.classList.remove("boom"), 900);
-    crashNum.textContent = "ВЗРЫВ x" + c.point.toFixed(2); crashMsg.textContent = "Ракета взорвалась вместе с твоей ставкой."; record(c.bet, 0);
+    crashNum.textContent = "ВЗРЫВ x" + c.point.toFixed(2); crashMsg.textContent = T("m_crash_boom"); record(c.bet, 0);
   };
   const startCrash = () => {
     if (crash) { // кнопка превратилась в «Забрать»
       const m = crash.mult, win = Math.floor(crash.bet * m); add(win); record(crash.bet, win);
-      crashMsg.textContent = "Забрал на x" + m.toFixed(2) + ": +" + fmt(win - crash.bet) + ". Жадность не победила."; if (win > crash.bet) burst(16); endCrash(true); return;
+      crashMsg.textContent = T("m_crash_cash", { m: m.toFixed(2), n: fmt(win - crash.bet) }); if (win > crash.bet) burst(16); endCrash(true); return;
     }
     const bet = betOf("crash");
-    if (!bet || wallet.coins < bet) { crashMsg.textContent = "Монет нет. Топлива тоже."; return; }
-    add(-bet); const u = Math.random(), point = Math.min(200, Math.max(1, 0.97 / (1 - u)));
-    crash = { bet, point, mult: 1, t0: performance.now() }; crashMsg.textContent = "Жми «Забрать» до взрыва!";
-    crashBtn.textContent = "Забрать"; crashBtn.classList.remove("primary"); crashBtn.classList.add("hot");
+    if (!bet || wallet.coins < bet) { crashMsg.textContent = T("m_crash_nocoins"); return; }
+    add(-bet); const u = Math.random(), point = Math.min(num("crash_max", 200), Math.max(1, (1 - num("crash_house_edge", 3) / 100) / (1 - u)));
+    crash = { bet, point, mult: 1, t0: performance.now() }; crashMsg.textContent = T("m_crash_run");
+    crashBtn.textContent = T("btn_crash_cash"); crashBtn.classList.remove("primary"); crashBtn.classList.add("hot");
     const loop = (now) => {
       if (!crash) return;
       const t = (now - crash.t0) / 1000; crash.mult = Math.exp(0.1 * t * (1 + t / 12));
@@ -199,10 +211,11 @@ NL.onPage(() => {
     };
     crashNum.textContent = "x1.00"; rocket.style.transform = "translate(0,0) rotate(8deg)"; raf = requestAnimationFrame(loop);
   };
-  crashBtn.addEventListener("click", startCrash, { signal });
+  crashBtn.addEventListener("click", startCrash, { signal }); crashMsg.textContent = T("m_crash_idle"); crashBtn.textContent = T("btn_crash_start");
 
   /* ===== 6. Скретч-карта ===== */
-  const PRIZES = [10, 20, 50, 100, 500, 2000];
+  const PRIZES = String(C.scratch_prizes || "10|20|50|100|500|2000").split("|").map((x) => parseFloat(x)).filter((x) => x > 0); if (!PRIZES.length) PRIZES.push(10);
+  const COST = num("scratch_cost", 50);
   const under = $("#scUnder"), foil = $("#scFoil"), scMsg = $("#scMsg"), scBuy = $("#scBuy"), SW = 300, SH = 130;
   let ticket = null, drawing = false;
   const prep = (cv) => { const d = Math.min(2, devicePixelRatio || 1); cv.width = SW * d; cv.height = SH * d; cv.style.aspectRatio = SW + "/" + SH; const g = cv.getContext("2d"); g.setTransform(d, 0, 0, d, 0, 0); return g; };
@@ -219,15 +232,15 @@ NL.onPage(() => {
     gr.addColorStop(0, "#9aa0b8"); gr.addColorStop(.5, "#d4d8e8"); gr.addColorStop(1, "#8c93ad"); g.fillStyle = gr; g.fillRect(0, 0, SW, SH);
     g.fillStyle = "rgba(255,255,255,.5)"; g.font = "800 14px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; for (let y = 20; y < SH; y += 40) for (let x = 40; x < SW; x += 80) g.fillText("СТЕРЕТЬ", x, y);
   };
-  paintFoil(); drawUnder([0, 0, 0, 0, 0, 0]); foil.classList.add("idle");
+  paintFoil(); drawUnder([0, 0, 0, 0, 0, 0]); foil.classList.add("idle"); scMsg.textContent = T("m_scratch_idle", { cost: COST }); scBuy.textContent = T("btn_scratch_buy", { cost: COST });
   const scratchAt = (e) => {
     if (!ticket || ticket.done) return; const r = foil.getBoundingClientRect(), x = (e.clientX - r.left) * SW / r.width, y = (e.clientY - r.top) * SH / r.height;
     gf.globalCompositeOperation = "destination-out"; gf.fillStyle = "#000"; gf.beginPath(); gf.arc(x, y, 15, 0, 7); gf.fill();
   };
   const finish = () => {
     if (!ticket || ticket.done) return; ticket.done = true; gf.clearRect(0, 0, SW, SH);
-    if (ticket.win) { add(ticket.win); record(ticket.cost, ticket.win); const net = ticket.win - ticket.cost; scMsg.textContent = "Три одинаковых! Приз " + fmt(ticket.win) + (net >= 0 ? ", чистыми +" + fmt(net) : ", но билет стоил " + ticket.cost + ", итого минус " + fmt(-net) + ". Классика."); if (net > 0) { burst(ticket.win >= 500 ? 50 : 18); shake($("#scWin")); } }
-    else { record(ticket.cost, 0); scMsg.textContent = "Ни одной тройки. Следующая точно выигрышная (нет)."; }
+    if (ticket.win) { add(ticket.win); record(ticket.cost, ticket.win); const net = ticket.win - ticket.cost; scMsg.textContent = net >= 0 ? T("m_scratch_win", { prize: fmt(ticket.win), n: fmt(net) }) : T("m_scratch_win_minus", { prize: fmt(ticket.win), cost: ticket.cost, n: fmt(-net) }); if (net > 0) { burst(ticket.win >= 500 ? 50 : 18); shake($("#scWin")); } }
+    else { record(ticket.cost, 0); scMsg.textContent = T("m_scratch_loss"); }
     scBuy.disabled = false;
   };
   const cleared = () => { const d = gf.getImageData(0, 0, foil.width, foil.height).data; let n = 0, tot = 0; for (let i = 3; i < d.length; i += 64) { tot++; if (d[i] < 20) n++; } return n / tot; };
@@ -237,50 +250,41 @@ NL.onPage(() => {
   foil.addEventListener("pointerup", up, { signal }); foil.addEventListener("pointercancel", () => { drawing = false; }, { signal });
   $("#scAll").addEventListener("click", finish, { signal });
   scBuy.addEventListener("click", () => {
-    const cost = 50; if (wallet.coins < cost) { scMsg.textContent = "На билет не хватает. Возьми займ, он вкусный."; return; }
+    const cost = COST; if (wallet.coins < cost) { scMsg.textContent = T("m_scratch_nocoins"); return; }
     add(-cost); const cells = Array.from({ length: 6 }, () => 0); let win = 0;
-    if (Math.random() < 0.2) { win = PRIZES[Math.min(PRIZES.length - 1, Math.floor(Math.pow(Math.random(), 2.2) * PRIZES.length))]; const pos = [0, 1, 2, 3, 4, 5].sort(() => Math.random() - .5).slice(0, 3); pos.forEach((p) => { cells[p] = win; }); }
+    if (Math.random() * 100 < num("scratch_win_chance", 20)) { win = PRIZES[Math.min(PRIZES.length - 1, Math.floor(Math.pow(Math.random(), 2.2) * PRIZES.length))]; const pos = [0, 1, 2, 3, 4, 5].sort(() => Math.random() - .5).slice(0, 3); pos.forEach((p) => { cells[p] = win; }); }
     for (let i = 0; i < 6; i++) if (!cells[i]) { let v, tries = 0; do { v = PRIZES[rnd(PRIZES.length)]; tries++; } while (tries < 20 && (v === win || cells.filter((x) => x === v).length >= 2)); cells[i] = v; }
     ticket = { cost, win, done: false }; drawUnder(cells); gf.globalCompositeOperation = "source-over"; paintFoil(); foil.classList.remove("idle");
-    scMsg.textContent = "Три одинаковых числа = выигрыш. Три. Одинаковых."; scBuy.disabled = true;
+    scMsg.textContent = T("m_scratch_hint"); scBuy.disabled = true;
   }, { signal });
 
   /* ===== 8. Лента «выигрышей» (всё придумано) ===== */
-  const NAMES = ["Вася_228", "xX_Ночной_Лудоман_Xx", "Тётя Люба", "Сергей Палыч", "Бро из соседнего подъезда", "ИгорьОтецДвоих", "Анонимус", "Мамкин_Инвестор", "Дядя Коля с дачи", "Кот Бублик", "Лёха Слотов", "Дима, который «щас отыграюсь»", "Бабушка Нина", "Тот самый парень"];
-  const GAMES = ["в слотах", "в рулетке", "в ракете", "в скретче", "у крупье-призрака"];
-  const items = Array.from({ length: 14 }, () => `<span><b>${NAMES[rnd(NAMES.length)]}</b> выиграл ${COIN} ${fmt((1 + rnd(99)) * [10, 100, 1000, 10000][rnd(4)])} ${GAMES[rnd(GAMES.length)]}</span>`).join("");
+  const NAMES = list("names").length ? list("names") : ["Аноним"], GAMES = list("games").length ? list("games") : ["в слотах"];
+  const items = Array.from({ length: 14 }, () => `<span>${esc(String(C.ticker_template || "{name} выиграл {coin} {amount} {game}")).replace("{name}", "<b>" + esc(NAMES[rnd(NAMES.length)]) + "</b>").replace("{coin}", COIN).replace("{amount}", fmt((1 + rnd(99)) * [10, 100, 1000, 10000][rnd(4)])).replace("{game}", esc(GAMES[rnd(GAMES.length)]))}</span>`).join("");
   $("#ticker").innerHTML = `<div class="tk">${items}</div><div class="tk" aria-hidden="true">${items}</div>`;
 
   /* ===== 9. Всплывающая реклама (можно выключить) ===== */
-  const ADS = [
-    ["Вы 1 000 000-й посетитель!", "Нажмите, чтобы не получить ничего. Мы серьёзно."],
-    ["Горячие слоты рядом с вами", "Они прямо на этой странице, никуда ехать не надо."],
-    ["Крупье скучает", "Одинокий крупье ищет игрока. Без опыта, без совести."],
-    ["3 лайфхака, как проиграть быстрее", "Третий тебя удивит: просто нажми MAX."],
-    ["Займи у себя из будущего", "Ставка 999% годовых. Будущий ты не против."],
-    ["Врачи в шоке", "Бабушка Нина выиграла 12 монет и теперь не может остановиться."],
-    ["Ваш кредитный рейтинг: огонь", "Тот, который в аду. Мы можем помочь его только усугубить."],
-    ["Не нажимай сюда", "Ты уже нажал? Ну вот. +5 монет за послушание."]
-  ];
+  const ADS = list("ads").filter((x) => x && (x.title || x.text));
   const adsOn = () => { try { return localStorage.getItem("northling-ads") !== "off"; } catch (_) { return true; } };
   const adsBox = $("#adsToggle"); adsBox.checked = adsOn();
   adsBox.addEventListener("change", () => { try { localStorage.setItem("northling-ads", adsBox.checked ? "on" : "off"); } catch (_) {} if (!adsBox.checked) $$(".ad").forEach((a) => a.remove()); }, { signal });
   const spawnAd = () => {
-    if (adsOn() && $$(".ad").length < 2) {
-      const [h, t] = ADS[rnd(ADS.length)], ad = document.createElement("div"); ad.className = "ad"; ad.setAttribute("role", "dialog");
+    if (ADS.length && adsOn() && $$(".ad").length < num("ad_max_on_screen", 2)) {
+      const A = ADS[rnd(ADS.length)], h = esc(A.title || ""), t = esc(A.text || ""), ad = document.createElement("div"); ad.className = "ad"; ad.setAttribute("role", "dialog");
       ad.style.cssText = `left:${6 + rnd(55)}%;top:${14 + rnd(50)}%`;
-      ad.innerHTML = `<div class="ad-bar"><span>РЕКЛАМА</span><button type="button" class="ad-x" aria-label="Закрыть">×</button></div><div class="ad-body"><b>${h}</b><p>${t}</p><button type="button" class="btn primary sm ad-go">Нажать</button></div>`;
-      let dodged = Math.random() < 0.4;
+      ad.innerHTML = `<div class="ad-bar"><span>${esc(C.ad_label || "РЕКЛАМА")}</span><button type="button" class="ad-x" aria-label="Закрыть">×</button></div><div class="ad-body"><b>${h}</b><p>${t}</p><button type="button" class="btn primary sm ad-go">${esc(A.button || "Нажать")}</button></div>`;
+      let dodged = Math.random() * 100 < num("ad_dodge_percent", 40);
       const x = ad.querySelector(".ad-x");
       x.addEventListener("pointerenter", () => { if (dodged) { dodged = false; ad.style.left = (4 + rnd(60)) + "%"; ad.style.top = (12 + rnd(55)) + "%"; } });
       x.addEventListener("click", () => ad.remove());
-      ad.querySelector(".ad-go").addEventListener("click", () => { add(5); toast("+5 монет за клик по рекламе. Так всё и начинается."); ad.remove(); });
+      ad.querySelector(".ad-go").addEventListener("click", () => { add(num("ad_reward", 5)); toast(T("m_ad_click", { n: num("ad_reward", 5) })); ad.remove(); });
       document.body.append(ad); later(() => ad.remove(), 30000);
     }
-    later(spawnAd, 18000 + rnd(17000));
+    later(spawnAd, num("ad_interval_min", 18) * 1000 + rnd(Math.max(0, num("ad_interval_max", 35) - num("ad_interval_min", 18)) * 1000));
   };
-  later(spawnAd, 9000);
+  later(spawnAd, num("ad_first_delay", 9) * 1000);
   NL.onCleanup(() => $$(".ad").forEach((a) => a.remove()));
 
   paint();
+  }
 });
