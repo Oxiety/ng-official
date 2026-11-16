@@ -1,0 +1,25 @@
+name: Sync from northling
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ng-official
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.UPSTREAM_TOKEN }}
+          fetch-depth: 0
+
+      - name: Merge changes from northling
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@://github.com"
+          git remote add upstream https://github.com
+          git fetch upstream
+          git merge upstream/main --allow-unrelated-histories -X ours --no-edit
+          git push origin main
