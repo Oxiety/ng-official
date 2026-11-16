@@ -17,6 +17,7 @@
 <script>
 try { const saved = localStorage.getItem('northling-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch (_) {}
 document.documentElement.classList.add('js');
+try{if(localStorage.getItem('northling-biz')==='1')document.documentElement.classList.add('biz')}catch(_){}
 window.__nlSite=fetch('data/site.json',{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(new Error('site.json'))); window.__nlSite.catch(()=>{});
 /* Настройки посетителя (js/settings.js) применяем сразу, до отрисовки: оптимизация и анимации */
 try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection,r=document.documentElement.classList;let s={};try{s=JSON.parse(localStorage.getItem('northling-settings'))||{}}catch(_){}
@@ -49,7 +50,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <div class="grain" aria-hidden="true"></div>
 <header class="top"><div class="pill">
 <a class="brand" href="index.html" aria-label="northling"><span class="orb"><svg class="nlogo" viewBox="0 0 28 28" aria-hidden="true"><defs><linearGradient id="nl-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset=".55" stop-color="#dff7ff"/><stop offset="1" stop-color="#9fe9ff"/></linearGradient></defs><path d="M8.4 20.2V8.8M8.4 13.4c0-2.6 2.1-4.2 4.9-4.2 3.1 0 5.1 1.9 5.1 4.9v6.1" fill="none" stroke="url(#nl-g)" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23" cy="19.2" r="2.2" fill="#ffb6ee"/></svg></span><b>northling<span>.</span></b></a>
-<nav id="menu" aria-label="Основная навигация"><a href="index.html" aria-current="page">Главная</a><a href="arts.html">Арты</a><a href="photos.html">Фотки</a><a href="oasis.html">Oasis</a><a href="webdev.html">webdev</a><a href="interactive.html">Интерактивчик</a><a href="anime.html">Аниме</a></nav>
+<nav id="menu" aria-label="Основная навигация"><a href="index.html" aria-current="page">Главная</a><a href="about.html">Обо мне</a><a data-furry href="arts.html">Арты</a><a href="photos.html">Фотки</a><a href="oasis.html">Oasis</a><a href="webdev.html">webdev</a><a href="interactive.html">Интерактивчик</a><a data-furry href="anime.html">Аниме</a></nav>
 <span class="tray"><button class="theme-toggle settings-toggle" type="button" aria-label="Настройки" aria-haspopup="dialog" aria-expanded="false" title="Настройки"><svg class="i" aria-hidden="true"><use href="#i-gear"/></svg></button><span class="clock" id="clock" aria-hidden="true"></span></span>
 <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" aria-controls="menu"><span></span><span></span></button>
 </div></header>
@@ -65,16 +66,16 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 </div>
 </section>
 
-<figure class="win win-photo"><span class="eyebrow">arts_cover.jpg</span>
+<figure class="win win-photo" data-furry><span class="eyebrow">arts_cover.jpg</span>
 <div class="frame"><img data-site-image="arts_cover" data-site-image-fit="arts_cover_fit" data-site-image-alt="arts_cover_alt" alt="Норт и Ноэль под снегом" style="object-position:50% 32%" fetchpriority="high"></div>
 </figure>
 
 <div class="marquee" aria-hidden="true"><div class="marquee-track"><div class="marquee-group"><span>northling</span><span>Норт</span><span>Ноэль</span><span>арты</span><span>britpop</span><span>90s rock</span><span>Oasis</span><span>webdev</span></div><div class="marquee-group"><span>northling</span><span>Норт</span><span>Ноэль</span><span>арты</span><span>britpop</span><span>90s rock</span><span>Oasis</span><span>webdev</span></div></div></div>
 
 <section class="win win-apps"><span class="eyebrow">что здесь есть</span>
-<div class="section-head"><h2>Четыре направления.<br>Один автор.</h2></div>
+<div class="section-head"><h2 data-biz="Направления. Один автор.">Четыре направления.<br>Один автор.</h2></div>
 <div class="apps">
-<a class="card app app-arts rv" href="arts.html"><span class="ico"><svg class="i " aria-hidden="true"><use href="#i-brush"/></svg></span><div><h3>Арты</h3><p data-site-content="home_arts_card">Норт и Ноэль, визуальные эксперименты и небольшая галерея. Плюс мини-игра.</p></div><svg class="i go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+<a data-furry class="card app app-arts rv" href="arts.html"><span class="ico"><svg class="i " aria-hidden="true"><use href="#i-brush"/></svg></span><div><h3>Арты</h3><p data-site-content="home_arts_card">Норт и Ноэль, визуальные эксперименты и небольшая галерея. Плюс мини-игра.</p></div><svg class="i go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 <a class="card app app-photos rv" href="photos.html"><span class="ico"><svg class="i " aria-hidden="true"><use href="#i-camera"/></svg></span><div><h3>Фотки</h3><p data-site-content="home_photos_card"></p></div><svg class="i go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 <a class="card app app-oasis rv" href="oasis.html"><span class="ico"><svg class="i " aria-hidden="true"><use href="#i-note"/></svg></span><div><h3>Oasis</h3><p data-site-content="home_oasis_card">Британские гитары, эпоха бритпопа и всё, что с этим связано.</p></div><svg class="i go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
 <a class="card app app-web rv" href="webdev.html"><span class="ico"><svg class="i " aria-hidden="true"><use href="#i-code"/></svg></span><div><h3>webdev</h3><p data-site-content="home_webdev_card">Эксперименты и проекты в процессе разработки.</p></div><svg class="i go" aria-hidden="true"><use href="#i-arrow"/></svg></a>
@@ -92,7 +93,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 </main>
 <footer class="footer"><div class="wrap footrow">
 <div><div class="footbrand">northling<span>.</span></div><p>Личный сайт northling.</p><p>Собрано с помощью Claude, вайб-кодинга и ручной доводки.</p></div>
-<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.4.1</p></div>
+<div class="right"><a class="btn bug-report" href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">Сообщить о багах</a><p>Напиши в Telegram: <a href="https://t.me/m0rning_glory" target="_blank" rel="noopener noreferrer">@m0rning_glory</a></p><p>© 2026 northling. Все права на персонажей и материалы принадлежат их автору.</p><p class="mono">HTML · CSS · JavaScript · v2.5</p></div>
 </div></footer>
 <div class="toast" role="status" aria-live="polite"></div>
 
@@ -106,6 +107,7 @@ if(s.perf==='on'||(s.perf!=='off'&&weak))r.add('lite');if(s.noAnim)r.add('no-ani
 <script src="js/arcade.js"></script>
 <script src="js/anime.js"></script>
 <script src="js/terminal.js"></script>
+<script src="js/about.js"></script>
 <script src="js/settings.js"></script>
 <script src="js/player.js" defer></script>
 <script src="js/ipod.js" defer></script>
