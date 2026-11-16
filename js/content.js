@@ -52,9 +52,9 @@
   const FURRY_WORDS = /норт|ноэль|арты|аниме/i;   // слова бегущей строки, которые прячутся в деловом режиме
   const apply = (data) => {
     // 0. Деловой режим: прячет всё фурри и страницу «Аниме» (переключатель в админке)
-    const biz = data.business_mode === "on";
+    const biz = window.NL_MODE === "biz" || data.business_mode === "on";
     document.documentElement.classList.toggle("biz", biz);
-    try { localStorage.setItem("northling-biz", biz ? "1" : "0"); } catch (_) {}
+    if (window.NL_MODE !== "biz") try { localStorage.setItem("northling-biz", biz ? "1" : "0"); } catch (_) {}
     if (biz && /\/(arts|anime)(\.html)?$/.test(location.pathname)) { location.replace("index.html"); return; }
     document.querySelectorAll("[data-biz]").forEach(node => {
       if (node.dataset.bizOrig === undefined) node.dataset.bizOrig = node.innerHTML;

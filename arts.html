@@ -14,10 +14,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400..900&family=Unbounded:wght@400..800&display=swap"></noscript>
 <link rel="stylesheet" href="css/style.css">
+<script src="js/mode.js"></script>
 <script>
 try { const saved = localStorage.getItem('northling-theme'); if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved; } catch (_) {}
 document.documentElement.classList.add('js');
-try{if(localStorage.getItem('northling-biz')==='1')document.documentElement.classList.add('biz')}catch(_){}
+try{if(window.NL_MODE==='biz'||localStorage.getItem('northling-biz')==='1')document.documentElement.classList.add('biz')}catch(_){}
 window.__nlSite=fetch('data/site.json',{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject(new Error('site.json'))); window.__nlSite.catch(()=>{});
 /* Настройки посетителя (js/settings.js) применяем сразу, до отрисовки: оптимизация и анимации */
 try{const n=navigator,m=n.deviceMemory,c=n.hardwareConcurrency,d=n.connection,r=document.documentElement.classList;let s={};try{s=JSON.parse(localStorage.getItem('northling-settings'))||{}}catch(_){}
