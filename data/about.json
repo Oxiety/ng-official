@@ -1,6 +1,6 @@
 {
   "eyebrow": "обо мне",
-  "name": "northling",
+  "name": "northling (РАЗДЕЛ В РАЗРАБОТКЕ)",
   "role": "Веб-разработчик и автор личных проектов",
   "intro": "Делаю сайты и небольшие интерактивные штуки на чистых HTML, CSS и JS. Люблю, когда всё работает быстро и выглядит аккуратно.",
   "photo": "",
@@ -9,23 +9,56 @@
   "bio": "Здесь можно рассказать о себе подробнее: чем занимаешься, что умеешь и какие задачи решаешь. Текст правится в админке, вкладка «Обо мне».",
   "facts_title": "коротко",
   "facts": [
-    {"label": "Город", "value": "Укажи в админке"},
-    {"label": "Языки", "value": "Русский, English"},
-    {"label": "Работаю с", "value": "HTML, CSS, JavaScript"}
+    {
+      "label": "Город",
+      "value": "Укажи в админке"
+    },
+    {
+      "label": "Языки",
+      "value": "Русский, English"
+    },
+    {
+      "label": "Работаю с",
+      "value": "HTML, CSS, JavaScript"
+    }
   ],
   "skills_title": "навыки",
-  "skills": ["HTML", "CSS", "JavaScript", "Адаптивная вёрстка", "Git и GitHub", "Cloudflare Pages"],
+  "skills": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Адаптивная вёрстка",
+    "Git и GitHub",
+    "Cloudflare Pages"
+  ],
   "experience_title": "опыт",
   "experience": [
-    {"period": "2026", "title": "Личный сайт northling.space", "place": "Собственный проект", "text": "Многостраничный сайт без фреймворков, свой редактор контента, плеер, бесшовные переходы между страницами."}
+    {
+      "period": "2026",
+      "title": "Личный сайт northling.space",
+      "place": "Собственный проект",
+      "text": "Многостраничный сайт без фреймворков, свой редактор контента, плеер, бесшовные переходы между страницами."
+    }
   ],
   "projects_title": "проекты",
   "projects": [
-    {"title": "northling.space", "text": "Личный сайт: Oasis, webdev, интерактивные штуки.", "url": "https://northling.space"}
+    {
+      "title": "northling.space",
+      "text": "Личный сайт: Oasis, webdev, интерактивные штуки.",
+      "url": "https://northling.space"
+    }
   ],
   "contacts_title": "контакты",
   "contacts": [
-    {"label": "Email", "value": "northlinng@icloud.com", "url": "mailto:northlinng@icloud.com"},
-    {"label": "Telegram", "value": "@m0rning_glory", "url": "https://t.me/m0rning_glory"}
+    {
+      "label": "Email",
+      "value": "northlinng@icloud.com",
+      "url": "mailto:northlinng@icloud.com"
+    },
+    {
+      "label": "Telegram",
+      "value": "@m0rning_glory",
+      "url": "https://t.me/m0rning_glory"
+    }
   ]
 }
